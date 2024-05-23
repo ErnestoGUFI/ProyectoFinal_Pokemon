@@ -14,19 +14,13 @@ public class TexturaManager {
     private int derechaIndex;
     private int izquierdaIndex;
 
-    private enum UltimaDireccion {
-        ARRIBA, ABAJO, DERECHA, IZQUIERDA
-    }
-
-    private UltimaDireccion ultimaDireccion;
-
     public TexturaManager() {
         cargarTexturas();
         reiniciarIndices();
-        ultimaDireccion = UltimaDireccion.ABAJO; 
     }
 
     private void cargarTexturas() {
+    	//aqui cargo todas las texturas posibles de movimiento de personaje
         arribaTextures = new Array<>();
         arribaTextures.add(new Texture("arriba.png"));
         arribaTextures.add(new Texture("arriba1.png"));
@@ -52,58 +46,31 @@ public class TexturaManager {
         izquierdaTextures.add(new Texture("izquierda3.png"));
 
     }
-    
+
     private void reiniciarIndices() {
+    	//reinicio los indices de texturas
         arribaIndex = 0;
         abajoIndex = 0;
         derechaIndex = 0;
         izquierdaIndex = 0;
     }
 
+    //primero se actuliza la textura con el movimiento llamado y luego se obtiene para pintarla en el dibujar de jugador
+    //el index se le va sumando 1 para alternar entre los texturas de cada arrayu que tenemos, y asi hacer una animacion por asi decirlo
     public Texture obtenerTexturaArriba() {
-        ultimaDireccion = UltimaDireccion.ARRIBA;
         return arribaTextures.get(arribaIndex);
     }
 
     public Texture obtenerTexturaAbajo() {
-        ultimaDireccion = UltimaDireccion.ABAJO;
         return abajoTextures.get(abajoIndex);
     }
 
     public Texture obtenerTexturaDerecha() {
-        ultimaDireccion = UltimaDireccion.DERECHA;
         return derechaTextures.get(derechaIndex);
     }
 
     public Texture obtenerTexturaIzquierda() {
-        ultimaDireccion = UltimaDireccion.IZQUIERDA;
         return izquierdaTextures.get(izquierdaIndex);
-    }
-
-    public Texture obtenerTextura(Controles controles) {
-        if (controles.arriba) {
-            return obtenerTexturaArriba();
-        } else if (controles.abajo) {
-            return obtenerTexturaAbajo();
-        } else if (controles.izquierda) {
-            return obtenerTexturaIzquierda();
-        } else if (controles.derecha) {
-            return obtenerTexturaDerecha();
-        } else {
-        
-            switch (ultimaDireccion) {
-                case ARRIBA:
-                    return arribaTextures.get(arribaIndex);
-                case ABAJO:
-                    return abajoTextures.get(abajoIndex);
-                case DERECHA:
-                    return derechaTextures.get(derechaIndex);
-                case IZQUIERDA:
-                    return izquierdaTextures.get(izquierdaIndex);
-                default:
-                    return abajoTextures.get(abajoIndex);
-            }
-        }
     }
 
     public void actualizarIndiceArriba() {
@@ -120,6 +87,21 @@ public class TexturaManager {
 
     public void actualizarIndiceIzquierda() {
         izquierdaIndex = (izquierdaIndex + 1) % izquierdaTextures.size;
+    }
+    
+    //dependiendo de al lugar que se este llamando se obtiene una textura
+    public Texture obtenerTextura(Controles controles) {
+        if (controles.arriba) {
+            return obtenerTexturaArriba();
+        } else if (controles.abajo) {
+            return obtenerTexturaAbajo();
+        } else if (controles.izquierda) {
+            return obtenerTexturaIzquierda();
+        } else if (controles.derecha) {
+            return obtenerTexturaDerecha();
+        } else {
+            return obtenerTexturaAbajo();
+        }
     }
 
     public void dispose() {

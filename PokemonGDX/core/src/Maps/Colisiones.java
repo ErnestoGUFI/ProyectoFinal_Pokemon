@@ -1,57 +1,19 @@
 package Maps;
 
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Colisiones {
 
-    public static boolean colisionConObjetos(TiledMap tiledMap, float[] vertices) {
-      
-        Polygon jugadorPolygon = new Polygon(vertices);
+	// colision con mapa recibe el tilemap en tmx las coordenadas en x,y de el jugador y el tamaño de los tiles del mapa
+    public static boolean colisionConMapa(TiledMap tiledMap, float x, float y, int tileWidth, int tileHeight) {
+        // Convierte las coordenadas del jugador a índices de tiles
+        int tileX = (int) (x / tileWidth);
+        int tileY = (int) (y / tileHeight);
 
-        
-        MapLayer objectLayer = tiledMap.getLayers().get("Objetos");
-
-      
-        for (RectangleMapObject objeto : objectLayer.getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle objetoRectangle = objeto.getRectangle();
-            
-            
-            if (Intersector.overlapConvexPolygons(jugadorPolygon, rectangleToPolygon(objetoRectangle))) {
-                return true; 
-            }
-        }    
-
-        for (PolygonMapObject objeto : objectLayer.getObjects().getByType(PolygonMapObject.class)) {
-            Polygon objetoPolygon = objeto.getPolygon();
-            
-           
-            if (Intersector.overlapConvexPolygons(jugadorPolygon, objetoPolygon)) {
-                return true; 
-            }
-        }
-
-        return false; 
+        // aqui se busca una capa de el mapa.tmx que se realizo, en este caso le puse de nombre colisionables a los tiles que no quiero que el jugador sea capaz de pisar
+        TiledMapTileLayer collisionLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Colisionables");
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
+        return cell != null;
     }
-    
-    // Método para convertir un rectángulo en un polígono
-    private static Polygon rectangleToPolygon(Rectangle rectangle) {
-        float[] vertices = {rectangle.x, rectangle.y,
-                            rectangle.x + rectangle.width, rectangle.y,
-                            rectangle.x + rectangle.width, rectangle.y + rectangle.height,
-                            rectangle.x, rectangle.y + rectangle.height};
-        return new Polygon(vertices);
-    }
-    
-
 }
-
-
-
