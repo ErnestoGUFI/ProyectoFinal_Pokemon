@@ -16,23 +16,23 @@ public class Colisiones {
       
         Polygon jugadorPolygon = new Polygon(vertices);
 
-        
+        //Buscar una capa especifica en el mapa.tmx
         MapLayer objectLayer = tiledMap.getLayers().get("Objetos");
 
-      
+        //Iterar entre los objetos que estan en la capa anteriormente obtenida
         for (RectangleMapObject objeto : objectLayer.getObjects().getByType(RectangleMapObject.class)) {
             Rectangle objetoRectangle = objeto.getRectangle();
             
-            
+            //Si poligonos del jugador colisionan con los poligonos del objeto, regresa true
             if (Intersector.overlapConvexPolygons(jugadorPolygon, rectangleToPolygon(objetoRectangle))) {
                 return true; 
             }
         }    
-
+        ////Iterar entre los rectangulos que estan en la capa anteriormente obtenida
         for (PolygonMapObject objeto : objectLayer.getObjects().getByType(PolygonMapObject.class)) {
             Polygon objetoPolygon = objeto.getPolygon();
             
-           
+            //Si el poligono del jugador colisiona con algun rectangulo, regresa true
             if (Intersector.overlapConvexPolygons(jugadorPolygon, objetoPolygon)) {
                 return true; 
             }

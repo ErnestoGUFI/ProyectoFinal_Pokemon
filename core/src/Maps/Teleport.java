@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Circle;
 
+// Es un copia y pega de la capa colisiones, solo que busca en una capa diferente.
+
 public class Teleport {
 
     public static boolean Teleport(TiledMap tiledMap, float[] vertices) {
