@@ -10,14 +10,14 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Circle;
 
-public class Colisiones {
+public class Teleport {
 
-    public static boolean colisionConObjetos(TiledMap tiledMap, float[] vertices) {
+    public static boolean Teleport(TiledMap tiledMap, float[] vertices) {
       
         Polygon jugadorPolygon = new Polygon(vertices);
 
         
-        MapLayer objectLayer = tiledMap.getLayers().get("Objetos");
+        MapLayer objectLayer = tiledMap.getLayers().get("Teleport");
 
       
         for (RectangleMapObject objeto : objectLayer.getObjects().getByType(RectangleMapObject.class)) {
@@ -52,6 +52,3 @@ public class Colisiones {
     
 
 }
-
-
-

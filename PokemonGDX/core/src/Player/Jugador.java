@@ -1,14 +1,17 @@
 package Player;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.pokemon.game.MyPokemonGame;
 
 import Maps.Colisiones;
+import Maps.Teleport;
 
 public class Jugador {
 
-    private float x;
-    private float y;
+    public float x;
+    public float y;
     private float velocidad;
     private TexturaManager texturaManager;
     private int frameCount;
@@ -20,42 +23,44 @@ public class Jugador {
     }
 
     public void reiniciar() {
-        x = 1000;
-        y = 500;
+        x = 950;
+        y = 50;
         velocidad = 2;
+
     }
 
-    public void update(Controles controles, TiledMap tiledMap, int tileWidth, int tileHeight) {
-        // la vieja x y la vieja y que estaba el jugador
-        // se usa para colision para devolver al personaje a su posicion anterior
+    public void update(Controles controles, TiledMap tiledMap, MyPokemonGame game) {
         float oldX = x;
         float oldY = y;
-        
-        frameCount++; // Incrementa frameCount
-        
+        frameCount--;
+
         if (controles.arriba) {
+            oldY = y;
             y += velocidad;
-            if (frameCount >= maxFrameCount) {
+            if (frameCount <= 0) {
                 texturaManager.actualizarIndiceArriba();
-                frameCount = 0; // Reinicia frameCount a 0
+                frameCount = maxFrameCount;
             }
         } else if (controles.abajo) {
+            oldY = y;
             y -= velocidad;
-            if (frameCount >= maxFrameCount) {
+            if (frameCount <= 0) {
                 texturaManager.actualizarIndiceAbajo();
-                frameCount = 0; // Reinicia frameCount a 0
+                frameCount = maxFrameCount;
             }
         } else if (controles.izquierda) {
+            oldX = x;
             x -= velocidad;
-            if (frameCount >= maxFrameCount) {
+            if (frameCount <= 0) {
                 texturaManager.actualizarIndiceIzquierda();
-                frameCount = 0; // Reinicia frameCount a 0
+                frameCount = maxFrameCount;
             }
         } else if (controles.derecha) {
+            oldX = x;
             x += velocidad;
-            if (frameCount >= maxFrameCount) {
+            if (frameCount <= 0) {
                 texturaManager.actualizarIndiceDerecha();
-                frameCount = 0; // Reinicia frameCount a 0
+                frameCount = maxFrameCount;
             }
         }
 
@@ -65,29 +70,36 @@ public class Jugador {
             velocidad = 2;
         }
 
-        if (colisionConMapa(tiledMap, x, y, tileWidth, tileHeight)) {
+        // Comprobar colisiones con los objetos del mapa
+        float[] vertices = new float[]{x + 3, y + 3, x + 7, y + 3, x + 7, y + 7, x + 3, y + 7}; 
+        if (Colisiones.colisionConObjetos(tiledMap, vertices)) {
             x = oldX;
             y = oldY;
         }
+        
+        if (Teleport.Teleport(tiledMap, vertices)) {
+            cambiarMapa(game, 1); 
+        }
     }
-
-    private boolean colisionConMapa(TiledMap tiledMap, float x, float y, int tileWidth, int tileHeight) {
-        return Colisiones.colisionConMapa(tiledMap, x, y, tileWidth, tileHeight);
-    }
+    
 
     public void dibujar(SpriteBatch batch, Controles controles) {
-        batch.draw(texturaManager.obtenerTextura(controles), x, y);
+        Texture jugadorTexture = texturaManager.obtenerTextura(controles);
+        batch.draw(jugadorTexture, x, y, 16, 16);
+    }
+    
+    public void cambiarMapa(MyPokemonGame game, int nuevoIndice) {
+        game.cambiarMapa(nuevoIndice, 1015,655);
     }
 
     public void dispose() {
         texturaManager.dispose();
     }
-
-    public float getY() {
-        return y;
+    
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public float getX() {
-        return x;
-    }
+
 }

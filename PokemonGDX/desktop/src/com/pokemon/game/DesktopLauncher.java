@@ -8,7 +8,7 @@ public class DesktopLauncher {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setForegroundFPS(60);
         config.setTitle("PokemonGDX");
-        config.setWindowedMode(1280, 720); // Tamaño inicial de la ventana
+        config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode()); // Iniciar en pantalla completa
         config.setResizable(true); // Permitir que la ventana sea redimensionable
         new Lwjgl3Application(new MyPokemonGame(), config);
     }

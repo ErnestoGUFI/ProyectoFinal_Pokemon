@@ -34,7 +34,7 @@
  </tile>
  <tile id="8">
   <objectgroup draworder="index" id="3">
-   <object id="26" x="7.875" y="3" width="25.25" height="32.125"/>
+   <object id="29" x="7.91304" y="3" width="25.087" height="31.9688"/>
   </objectgroup>
  </tile>
  <tile id="18">
