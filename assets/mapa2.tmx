@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="40">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="41">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="272" columns="8">
   <image source="tiles.png" width="128" height="544"/>
  </tileset>
@@ -210,7 +210,9 @@
 70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70,71,72,70
 </data>
  </layer>
- <objectgroup id="3" name="Teleport"/>
+ <objectgroup id="3" name="Teleport">
+  <object id="40" name="Mapa1" x="1022.65" y="341.063" width="1.17391" height="50.1107"/>
+ </objectgroup>
  <objectgroup id="2" name="Objetos">
   <object id="1" x="-0.585926" y="569.051" width="1024.5" height="103.5"/>
   <object id="2" x="1023.72" y="-0.057971" width="0.652174" height="569.043"/>

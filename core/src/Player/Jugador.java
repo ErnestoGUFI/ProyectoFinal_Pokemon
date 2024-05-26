@@ -31,7 +31,7 @@ public class Jugador {
 
     public void update(Controles controles, TiledMap tiledMap, GameScreen game) {
         //Estas son las anteriores posiciones del jugador en x,y.
-    	float oldX = x;
+        float oldX = x;
         float oldY = y;
         
         frameCount--;
@@ -76,8 +76,20 @@ public class Jugador {
             y = oldY;
         }
         
-        if (Teleport.Teleport(tiledMap, vertices)) {
-            cambiarMapa(game, 1); //Luego cambiaremos este 1.
+        if (Teleport.TeleportMapa1(tiledMap, vertices)) {
+            cambiarMapa(game, 0, -3, 655); // Coordenadas para mapa1
+        }
+        
+        if (Teleport.TeleportMapa2(tiledMap, vertices)) {
+            cambiarMapa(game, 1, 1015, 655); // Coordenadas para mapa2
+        }
+        
+        if (Teleport.TeleportTienda(tiledMap, vertices)) {
+            cambiarMapa(game, 2, 300, 200); // Coordenadas para tienda
+        }
+        
+        if (Teleport.TeleportCasa(tiledMap, vertices)) {
+            cambiarMapa(game, 3, 100, 50); // Coordenadas para casa
         }
     }
     
@@ -86,8 +98,8 @@ public class Jugador {
         batch.draw(jugadorTexture, x, y, 16, 16);
     }
     
-    public void cambiarMapa(GameScreen game, int nuevoIndice) {
-        game.cambiarMapa(nuevoIndice, 1015,655);
+    public void cambiarMapa(GameScreen game, int nuevoIndice, float newX, float newY) {
+        game.cambiarMapa(nuevoIndice, newX, newY);
     }
 
     public void dispose() {
@@ -98,6 +110,5 @@ public class Jugador {
         this.x = x;
         this.y = y;
     }
-
-
 }
+
