@@ -25,6 +25,10 @@ public class Teleport {
     public static boolean TeleportCasa(TiledMap tiledMap, float[] vertices) {
         return checkTeleport(tiledMap, vertices, "Casa");
     }
+    
+    public static boolean TeleportVolver(TiledMap tiledMap, float[] vertices) {
+        return checkTeleport(tiledMap, vertices, "Volver");
+    }
 
     private static boolean checkTeleport(TiledMap tiledMap, float[] vertices, String targetName) {
         Polygon jugadorPolygon = new Polygon(vertices);
@@ -35,21 +39,15 @@ public class Teleport {
             Rectangle objetoRectangle = objeto.getRectangle();
             if (Intersector.overlapConvexPolygons(jugadorPolygon, rectangleToPolygon(objetoRectangle))) {
                 if (targetName.equals(objeto.getName())) {
-                    System.out.println("Teleport activated by: " + objeto.getName());
+                    System.out.println("Nombre del teleport activado: " + objeto.getName());
                     return true;
                 }
             }
         }
 
-        for (PolygonMapObject objeto : objectLayer.getObjects().getByType(PolygonMapObject.class)) {
-            Polygon objetoPolygon = objeto.getPolygon();
-            if (Intersector.overlapConvexPolygons(jugadorPolygon, objetoPolygon)) {
-                if (targetName.equals(objeto.getName())) {
-                    System.out.println("Teleport activated by: " + objeto.getName());
-                    return true;
-                }
-            }
-        }
+   
+            
+        
 
         return false;
     }

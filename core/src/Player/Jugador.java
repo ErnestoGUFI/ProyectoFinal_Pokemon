@@ -89,8 +89,13 @@ public class Jugador {
         }
         
         if (Teleport.TeleportCasa(tiledMap, vertices)) {
-            cambiarMapa(game, 3, 100, 50); // Coordenadas para casa
+            cambiarMapa(game, 2, 207, 49); // Coordenadas para casa
         }
+        
+        if (Teleport.TeleportVolver(tiledMap, vertices)) {
+            cambiarMapa(game, 0, 888, 98); // Coordenadas para casa
+        }
+        
     }
     
     public void dibujar(SpriteBatch batch, Controles controles) {

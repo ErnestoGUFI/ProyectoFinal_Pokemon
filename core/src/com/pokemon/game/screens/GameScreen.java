@@ -46,6 +46,7 @@ public class GameScreen implements Screen{
         mapas = new Mapa[] {
             new Mapa("mapa.tmx", camera),
             new Mapa("mapa2.tmx", camera),
+            new Mapa("Casa.tmx", camera),
             
         };
         mapaActualIndex = 0;
