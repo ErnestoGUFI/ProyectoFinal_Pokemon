@@ -18,15 +18,13 @@ public class Teleport {
       
         Polygon jugadorPolygon = new Polygon(vertices);
 
-        
         MapLayer objectLayer = tiledMap.getLayers().get("Teleport");
 
-      
         for (RectangleMapObject objeto : objectLayer.getObjects().getByType(RectangleMapObject.class)) {
             Rectangle objetoRectangle = objeto.getRectangle();
             
-            
             if (Intersector.overlapConvexPolygons(jugadorPolygon, rectangleToPolygon(objetoRectangle))) {
+                System.out.println("Teleport activated by: " + objeto.getName());
                 return true; 
             }
         }    
@@ -34,8 +32,8 @@ public class Teleport {
         for (PolygonMapObject objeto : objectLayer.getObjects().getByType(PolygonMapObject.class)) {
             Polygon objetoPolygon = objeto.getPolygon();
             
-           
             if (Intersector.overlapConvexPolygons(jugadorPolygon, objetoPolygon)) {
+                System.out.println("Teleport activated by: " + objeto.getName());
                 return true; 
             }
         }
@@ -51,6 +49,4 @@ public class Teleport {
                             rectangle.x, rectangle.y + rectangle.height};
         return new Polygon(vertices);
     }
-    
-
 }

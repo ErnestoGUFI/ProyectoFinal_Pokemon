@@ -70,7 +70,7 @@ public class GameScreen implements Screen{
         jugador.dibujar(game.batch, controles);
         game.batch.end();
         
-        System.out.println(jugador.x+" "+jugador.y);
+        //System.out.println(jugador.x+" "+jugador.y);
     		
 	}
 
