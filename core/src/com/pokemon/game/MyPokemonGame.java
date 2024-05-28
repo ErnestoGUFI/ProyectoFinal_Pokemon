@@ -2,18 +2,20 @@ package com.pokemon.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.pokemon.game.screens.FightScreen;
 import com.pokemon.game.screens.GameScreen;
 
 
 public class MyPokemonGame extends Game {
 
     public SpriteBatch batch;
-
+    public static final int width = 1280;
+    public static final int height = 720;
     @Override
     public void create () {
     	//El batch se crea aqui pero se manda como parametro para las demas clases screen.
         batch = new SpriteBatch();
-        this.setScreen(new GameScreen(this));
+        this.setScreen(new FightScreen(this));
     }
     
     @Override
