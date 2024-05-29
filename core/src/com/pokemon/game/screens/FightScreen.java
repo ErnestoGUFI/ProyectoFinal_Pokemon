@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -34,16 +37,30 @@ public class FightScreen implements Screen{
     private Texture vsSprite;
     //Texturas de los sprites de la batalla en si.
     private Texture fondoBatalla;
+    private Texture pokemonAmigoSprite;
     
     //Animaciones
-    int ySpriteJugador=0;
-    int ySpriteEnemigo=369;
+    private int ySpriteJugador=0;
+    private int ySpriteEnemigo=369;
     
     //Timer que llevara el tiempo del juego.
     Timer tiempo;
-    int seg=0;
+    private int seg=0;
     //Objeto de la clase ShapeRenderer que dibuja formas.
-    ShapeRenderer sr;
+    private ShapeRenderer sr;
+    //Objeto que escribe texto.
+    private BitmapFont text;
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    
+    private BitmapFont text1;
+    private FreeTypeFontGenerator generator1;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter1;
+    
+    
+    // Objetos necesarios para el desarrollo de la pelea.
+    private int porcentajeJugador;
+    private int porcentajeEnemigo; 
     
     
     public FightScreen(MyPokemonGame game) {
@@ -53,6 +70,8 @@ public class FightScreen implements Screen{
     	 pokemonEnemigoSprite = new Texture("squirtleSprite.png");
     	 vsSprite = new Texture("vsSprite.png");
     	 fondoBatalla = new Texture("fondoBatalla.png");
+    	 pokemonAmigoSprite = new Texture("bulbasaurSprite.png");
+    	 
     	 
     	 tiempo = new Timer(1000, new ActionListener() {
 			@Override
@@ -62,6 +81,17 @@ public class FightScreen implements Screen{
     	 });
     	 
     	 sr = new ShapeRenderer();
+    	 generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+    	 parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    	 parameter.size = 18;
+    	 text = generator.generateFont(parameter);
+    	 generator.dispose();
+    	 
+    	 generator1 = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+    	 parameter1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    	 parameter1.size = 16;
+    	 text1 = generator1.generateFont(parameter1);
+    	 generator1.dispose();
     }
     
 	@Override
@@ -109,12 +139,11 @@ public class FightScreen implements Screen{
             
         	//Dibujar utilizando el batch.
         	game.batch.draw(fondoBatalla, 48, 47, 1178, 630);
-        	
         	game.batch.end();
         	
         	//Dibujar utilizando el ShapeRenderer
         	sr.begin(ShapeRenderer.ShapeType.Filled);
-        	sr.setColor(new Color(217/255f, 217/255f, 217/255f, 0.8f)); //Se divide entre 255 ya que el constructor no acepta valores mayores a 1.
+        	sr.setColor(new Color(205/255f, 205/255f, 205/255f, 0.8f)); //Se divide entre 255 ya que el constructor no acepta valores mayores a 1.
         	sr.rect(48, 47, 1178, 150);
         	
         	roundRect(sr, 90, 63, 520, 120, 20, new Color(175/255f, 175/255f, 175/255f,0.8f));
@@ -127,8 +156,40 @@ public class FightScreen implements Screen{
         	
         	//Rectangulo de ataque seleccionado.
         	roundRect(sr,698,135,204,42,6,new Color(248/255f, 168/255f, 176/255f,0.8f)); //Este ira cambiando.
+        	//Rectangulos de enemigo y jugador
+        	sr.setColor(new Color(240,240,240,1));
+        	sr.rect(60,565,400,100);
+        	sr.rect(810,210,400,100);
+        	
+        	//Barra pokemon amigo.
+        	sr.setColor(Color.GREEN);
+        	sr.rect(905,230,280,10);
+        	//Barra pokemon enemigo.
+        	sr.rect(155,585,280,10);
         	
         	sr.end();
+        	
+        	game.batch.begin();
+        	
+        	game.batch.draw(pokemonAmigoSprite, 250,160,300,300);
+        	game.batch.draw(pokemonEnemigoSprite, 750, 360, 270, 220);
+        	text.setColor(new Color(0,0,0,0.8f));
+        	text.draw(game.batch, "Bulbasaur ataca a squirtle", 120f,135f);
+        	
+        	text1.setColor(new Color(0,0,0,0.8f));
+        	text1.draw(game.batch, "Placaje", 740f,165f);
+        	text1.draw(game.batch, "Latigo Cepa", 710f,92f);
+        	text1.draw(game.batch, "Somnifero", 985f,165f);
+        	text1.draw(game.batch, "Intimidación", 975f,92f);
+        	
+        	text1.draw(game.batch, "Vida", 825f, 245f); 
+        	text1.draw(game.batch, "Vida", 70f, 600f);
+        	
+        	text1.draw(game.batch, "Bulbasaur", 825f, 295f); 
+        	text1.draw(game.batch, "Squirtle", 70f, 650f);
+        	
+        	
+        	game.batch.end();
         }
         
         
@@ -161,7 +222,11 @@ public class FightScreen implements Screen{
 	@Override
 	public void dispose() {
         game.batch.dispose();
-        if(seg>=2) sr.dispose();
+        if(seg>=2){
+        	sr.dispose();
+        	text.dispose();
+        }
+        
 	}
 	
 	public void roundRect(ShapeRenderer sr, int x, int y, int width, int height, int radio, Color color) {
