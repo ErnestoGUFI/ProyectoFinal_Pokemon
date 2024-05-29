@@ -13,18 +13,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
-
-import Maps.Mapa;
 import Player.Controles;
-import Player.Jugador;
 
 public class FightScreen implements Screen{
     private Controles controles;
@@ -59,9 +52,13 @@ public class FightScreen implements Screen{
     
     
     // Objetos necesarios para el desarrollo de la pelea.
-    private int porcentajeJugador;
-    private int porcentajeEnemigo; 
+    private float porcentajeJugador = 1f;
+    private float porcentajeEnemigo = 1f; 
     
+    private int turno = 0;
+    
+    private OrthographicCamera camera;
+    private Viewport viewport;
     
     public FightScreen(MyPokemonGame game) {
     	 this.game = game;
@@ -96,6 +93,7 @@ public class FightScreen implements Screen{
     
 	@Override
 	public void show() {
+		
         controles = new Controles();
         Gdx.input.setInputProcessor(controles);
         tiempo.start();
@@ -127,17 +125,16 @@ public class FightScreen implements Screen{
             
             if(ySpriteEnemigo>300) {
             	ySpriteEnemigo--;
-            	System.out.println(ySpriteEnemigo);
             }
             game.batch.end();
         }
-        
-        if(seg>=2) {
+
+        if(seg>=2 && turno == 0) {
         	game.batch.begin();
         	Gdx.gl.glClearColor(240, 240, 240, 1);
         	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             
-        	//Dibujar utilizando el batch.
+        	//Dibujar fondo de la batalla.
         	game.batch.draw(fondoBatalla, 48, 47, 1178, 630);
         	game.batch.end();
         	
@@ -145,7 +142,6 @@ public class FightScreen implements Screen{
         	sr.begin(ShapeRenderer.ShapeType.Filled);
         	sr.setColor(new Color(205/255f, 205/255f, 205/255f, 0.8f)); //Se divide entre 255 ya que el constructor no acepta valores mayores a 1.
         	sr.rect(48, 47, 1178, 150);
-        	
         	roundRect(sr, 90, 63, 520, 120, 20, new Color(175/255f, 175/255f, 175/255f,0.8f));
         	
         	//Rectangulos del ataque.
@@ -156,6 +152,7 @@ public class FightScreen implements Screen{
         	
         	//Rectangulo de ataque seleccionado.
         	roundRect(sr,698,135,204,42,6,new Color(248/255f, 168/255f, 176/255f,0.8f)); //Este ira cambiando.
+        	
         	//Rectangulos de enemigo y jugador
         	sr.setColor(new Color(240,240,240,1));
         	sr.rect(60,565,400,100);
@@ -163,33 +160,44 @@ public class FightScreen implements Screen{
         	
         	//Barra pokemon amigo.
         	sr.setColor(Color.GREEN);
-        	sr.rect(905,230,280,10);
+        	sr.rect(905,230,280 * porcentajeJugador,10);
         	//Barra pokemon enemigo.
-        	sr.rect(155,585,280,10);
+        	sr.rect(155,585,280 * porcentajeEnemigo,10);
         	
         	sr.end();
         	
         	game.batch.begin();
         	
+        	//Dibujar los sprites de los pokemon.
         	game.batch.draw(pokemonAmigoSprite, 250,160,300,300);
         	game.batch.draw(pokemonEnemigoSprite, 750, 360, 270, 220);
+        	
+        	//Text para los comentarios de lo que esta pasando.
         	text.setColor(new Color(0,0,0,0.8f));
         	text.draw(game.batch, "Bulbasaur ataca a squirtle", 120f,135f);
         	
+        	//Text para el nombre de los ataques.
         	text1.setColor(new Color(0,0,0,0.8f));
         	text1.draw(game.batch, "Placaje", 740f,165f);
         	text1.draw(game.batch, "Latigo Cepa", 710f,92f);
         	text1.draw(game.batch, "Somnifero", 985f,165f);
         	text1.draw(game.batch, "Intimidación", 975f,92f);
         	
+        	//Text para el apuntador de vida.
         	text1.draw(game.batch, "Vida", 825f, 245f); 
         	text1.draw(game.batch, "Vida", 70f, 600f);
         	
+        	//Text para los nombres de los pokemon.
         	text1.draw(game.batch, "Bulbasaur", 825f, 295f); 
         	text1.draw(game.batch, "Squirtle", 70f, 650f);
         	
-        	
         	game.batch.end();
+        	
+        	
+        }
+        
+        if(seg>=2 && turno == 1) {
+        
         }
         
         

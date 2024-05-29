@@ -6,7 +6,8 @@ import com.badlogic.gdx.Input.Keys;
 public class Controles extends InputAdapter {
 
     public boolean arriba, abajo, izquierda, derecha, correr;
-
+    
+    
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Keys.W:
@@ -29,6 +30,7 @@ public class Controles extends InputAdapter {
                 return true;
             default:
                 return false;
+            
         }
     }
 

@@ -85,7 +85,8 @@ public class Jugador {
         }
         
         if (Teleport.TeleportTienda(tiledMap, vertices)) {
-            cambiarMapa(game, 2, 300, 200); // Coordenadas para tienda
+            //cambiarMapa(game, 2, 300, 200); // Coordenadas para tienda
+        	MyPokemonGame.iniciarPelea(true);
         }
         
         if (Teleport.TeleportCasa(tiledMap, vertices)) {
