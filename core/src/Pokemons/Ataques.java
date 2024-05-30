@@ -10,9 +10,12 @@ public class Ataques {
 	}
 	
 	public float atacar(Pokemon pokemon) {
-		int vida = pokemon.vida - this.damage;
+		float auxVida = 100;
+		float vida = pokemon.vida - this.damage;
 		
-		float porcentajeVida = (vida * 100) / pokemon.vida;
+		pokemon.vida = (int)vida;
+		
+		float porcentajeVida = (float)(vida / auxVida);
 		
 		return porcentajeVida;
 		

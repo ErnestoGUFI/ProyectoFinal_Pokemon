@@ -47,14 +47,14 @@ public class FightScreen implements Screen {
     // Battle variables
     private float porcentajeJugador = 1f;
     private float porcentajeEnemigo = 1f;
-    private int turno = 1;
+    private boolean turno = true;
 
     private OrthographicCamera cameraFight;
     private Viewport viewportFight;
 
     private Pokemon pokemonAmigo, pokemonEnemigo;
 
-    private String narracion = "Elige un movimiento.";
+    private String narracion;
 
     private boolean paused = false;
     private float pauseTimer = 0f;
@@ -106,9 +106,11 @@ public class FightScreen implements Screen {
     public void show() {
         pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero",
                 20, "Intimidacion", 21);
-        pokemonEnemigo = new Pokemon("Squirtle", 10, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15,
+        pokemonEnemigo = new Pokemon("Squirtle", 100, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15,
                 "Escudo", 20, "Intimidacion", 21);
-
+        
+        narracion = "¿Que va a hacer " + pokemonAmigo.nombre + "?";
+        
         tiempo.start();
     }
 
@@ -119,7 +121,6 @@ public class FightScreen implements Screen {
             if (pauseTimer >= PAUSE_DURATION) {
                 pauseTimer = 0f;
                 paused = false;
-                turno = 0;
             }
             return;
         }
@@ -127,12 +128,19 @@ public class FightScreen implements Screen {
         if (seg < 5) {
         	introBatalla();
         } else if (seg >= 5) {
-            if (turno == 0) {
+            if (turno) {
             	batallaScreen();
                 seleccionAtaque();
-            } else if (turno == 1) {
+            } else {
+            	paused = true;
             	turnoEnemigo();
+            	turno = true;
             }
+        }
+        
+        if(pokemonEnemigo.vida<=0){
+            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        	game.setScreen(new GameScreen(game));
         }
     }
 
@@ -143,7 +151,13 @@ public class FightScreen implements Screen {
             selectedAttackIndex = (selectedAttackIndex - 1 + 4) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             String selectedAttackName = pokemonAmigo.atacks[selectedAttackIndex].nombre;
-            System.out.println("Ataque seleccionado: " + selectedAttackName);
+            System.out.println("Ataque seleccionado: " + selectedAttackName);   
+            if(pokemonEnemigo.vida > 0) {
+            	narracion = (pokemonAmigo.nombre + " ha usado " + selectedAttackName);
+                porcentajeEnemigo = (float)(pokemonAmigo.atacks[selectedAttackIndex].atacar(pokemonEnemigo));
+                turno = true;
+                
+            }
         }
     }
 
@@ -190,13 +204,14 @@ public class FightScreen implements Screen {
         roundRect(sr, 695, 58, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
         roundRect(sr, 965, 58, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
 
-        roundRect(sr, 698, 135, 204, 42, 6, new Color(248 / 255f, 168 / 255f, 176 / 255f, 0.8f));
+        //roundRect(sr, 698, 135, 204, 42, 6, new Color(248 / 255f, 168 / 255f, 176 / 255f, 0.8f));
 
         sr.setColor(new Color(240 / 255f, 240 / 255f, 240 / 255f, 1));
         sr.rect(60, 565, 400, 100);
         sr.rect(810, 210, 400, 100);
 
         sr.setColor(Color.GREEN);
+        
         sr.rect(905, 230, 280 * porcentajeJugador, 10);
         sr.rect(155, 585, 280 * porcentajeEnemigo, 10);
 
@@ -217,10 +232,10 @@ public class FightScreen implements Screen {
 
         // Dibuja nombres de ataques
         for (int i = 0; i < 4; i++) {
-            float attackTextX = 740f;
+            float attackTextX = 720f;
             float attackTextY = 160f - i * 70;
             if (i >= 2) {
-                attackTextX = 1000f;
+                attackTextX = 980f;
                 attackTextY = 160f - (i - 2) * 70;
             }
             if (i == selectedAttackIndex) {
@@ -235,12 +250,13 @@ public class FightScreen implements Screen {
         text1.setColor(originalColor);
 
         // Dibuja nombres de Pokémon
-        text1.draw(game.batch, pokemonAmigo.nombre, 250, 145);
-        text1.draw(game.batch, pokemonEnemigo.nombre, 750, 340);
+        text1.setColor(new Color(0,0,0,0.8f));
+        text1.draw(game.batch, pokemonEnemigo.nombre, 80, 650);
+        text1.draw(game.batch, pokemonAmigo.nombre, 830, 295);
 
         // Dibuja barras de salud
-        text1.draw(game.batch, "Vida", 910f, 245f); 
-        text1.draw(game.batch, "Vida", 200f, 600f);
+        text1.draw(game.batch, "Vida", 830f, 245f); 
+        text1.draw(game.batch, "Vida", 80f, 600f);
     }
 
 
@@ -248,7 +264,6 @@ public class FightScreen implements Screen {
         Random random = new Random();
         int attack = random.nextInt(4);
         narracion = pokemonEnemigo.nombre + " ha usado " + pokemonEnemigo.atacks[attack].nombre;
-        turno = 2;
         paused = true;
     }
 

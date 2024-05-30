@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
@@ -26,6 +27,7 @@ public class GameScreen implements Screen{
     
     public GameScreen(MyPokemonGame game) {
     	 this.game = game;
+    	 //game.batch = new SpriteBatch();
     }
     
 	@Override
