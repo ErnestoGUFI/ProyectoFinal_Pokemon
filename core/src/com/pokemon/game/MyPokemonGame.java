@@ -23,6 +23,7 @@ public class MyPokemonGame extends Game {
         
 
     }
+    
     public static BitmapFont getDefaultFont() {
     	// Devuelve una nueva instancia de la fuente predeterminada
     	return new BitmapFont(); 
