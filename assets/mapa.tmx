@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="162">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="164">
  <tileset firstgid="1" name="d36bih3-7bd0f401-eaaa-493a-b102-e5abbcb3bc67 (1)" tilewidth="16" tileheight="16" tilecount="272" columns="8">
   <image source="tiles.png" width="128" height="544"/>
  </tileset>
@@ -480,5 +480,7 @@
   <object id="100" name="MapaInicial" x="1019.92" y="341.333" width="3.41667" height="51"/>
   <object id="114" name="Mapa2" x="-1.6625" y="341.708" width="0.795142" height="51"/>
   <object id="161" name="Casa" x="887.978" y="914.933" width="16" height="3.13333"/>
+  <object id="162" name="Arbusto" x="127.25" y="192.25" width="161.25" height="47"/>
+  <object id="163" name="Arbusto" x="-0.125" y="80" width="79.25" height="63"/>
  </objectgroup>
 </map>

@@ -1,5 +1,7 @@
 package Player;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,6 +22,7 @@ public class Jugador {
     private int frameCount;
     private int maxFrameCount = 10;
     
+    
     public MyPokemonGame pokemonGame;
     
     public Jugador(MyPokemonGame pokemonGame) {
@@ -38,6 +41,9 @@ public class Jugador {
         //Estas son las anteriores posiciones del jugador en x,y.
         float oldX = x;
         float oldY = y;
+        
+        Random random = new Random();
+        int randomNumber = random.nextInt(200);
         
         frameCount--;
 
@@ -90,9 +96,7 @@ public class Jugador {
         }
         
         if (Teleport.TeleportTienda(tiledMap, vertices)) {
-            //cambiarMapa(game, 2, 300, 200); // Coordenadas para tienda
-        	Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        	pokemonGame.setScreen(new FightScreen(new MyPokemonGame()));
+            cambiarMapa(game, 3, 300, 200); // Coordenadas para tienda
         }
         
         if (Teleport.TeleportCasa(tiledMap, vertices)) {
@@ -102,6 +106,14 @@ public class Jugador {
         if (Teleport.TeleportVolver(tiledMap, vertices)) {
             cambiarMapa(game, 0, 888, 98); // Coordenadas para casa
         }
+        if (Teleport.TeleportArbusto(tiledMap, vertices) && randomNumber == 7) {
+         
+        	System.out.println("Pelea Encontrada");
+            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        	pokemonGame.setScreen(new FightScreen(new MyPokemonGame()));
+        }
+        
+        
         
     }
     

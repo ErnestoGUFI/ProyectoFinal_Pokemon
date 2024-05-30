@@ -29,6 +29,10 @@ public class Teleport {
     public static boolean TeleportVolver(TiledMap tiledMap, float[] vertices) {
         return checkTeleport(tiledMap, vertices, "Volver");
     }
+    
+    public static boolean TeleportArbusto(TiledMap tiledMap, float[] vertices) {
+        return checkTeleport(tiledMap, vertices, "Arbusto");
+    }
 
     private static boolean checkTeleport(TiledMap tiledMap, float[] vertices, String targetName) {
         Polygon jugadorPolygon = new Polygon(vertices);
