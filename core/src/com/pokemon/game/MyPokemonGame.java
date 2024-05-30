@@ -2,9 +2,11 @@ package com.pokemon.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.pokemon.game.screens.FightScreen;
 import com.pokemon.game.screens.GameScreen;
+import com.pokemon.game.screens.MainScreen;
 
 
 public class MyPokemonGame extends Game {
@@ -17,8 +19,13 @@ public class MyPokemonGame extends Game {
     public void create () {
     	//El batch se crea aqui pero se manda como parametro para las demas clases screen.
         batch = new SpriteBatch();
-        this.setScreen(new FightScreen(this));
+        setScreen(new MainScreen(this));
+        
 
+    }
+    public static BitmapFont getDefaultFont() {
+    	// Devuelve una nueva instancia de la fuente predeterminada
+    	return new BitmapFont(); 
     }
     
     @Override
