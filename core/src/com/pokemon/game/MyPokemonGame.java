@@ -17,24 +17,13 @@ public class MyPokemonGame extends Game {
     public void create () {
     	//El batch se crea aqui pero se manda como parametro para las demas clases screen.
         batch = new SpriteBatch();
-        
-        if(iniciarPelea(false)) {
-        	this.dispose();
-        	this.setScreen(new FightScreen(this));
-        }else {
-        	this.setScreen(new GameScreen(this));
-        }
+        this.setScreen(new FightScreen(this));
+
     }
     
     @Override
     public void render () {
     	super.render();
-    }
-    
-    public static boolean iniciarPelea(boolean flag) {
-		System.out.println("puto");
-		
-    	return flag;
     }
 
 }

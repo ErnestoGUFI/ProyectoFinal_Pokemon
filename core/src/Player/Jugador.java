@@ -1,9 +1,11 @@
 package Player;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.pokemon.game.MyPokemonGame;
+import com.pokemon.game.screens.FightScreen;
 import com.pokemon.game.screens.GameScreen;
 
 import Maps.Colisiones;
@@ -18,9 +20,12 @@ public class Jugador {
     private int frameCount;
     private int maxFrameCount = 10;
     
-    public Jugador() {
+    public MyPokemonGame pokemonGame;
+    
+    public Jugador(MyPokemonGame pokemonGame) {
         reiniciar();
         texturaManager = new TexturaManager();
+        this.pokemonGame = pokemonGame;
     }
 
     public void reiniciar() {
@@ -86,7 +91,8 @@ public class Jugador {
         
         if (Teleport.TeleportTienda(tiledMap, vertices)) {
             //cambiarMapa(game, 2, 300, 200); // Coordenadas para tienda
-        	MyPokemonGame.iniciarPelea(true);
+        	Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        	pokemonGame.setScreen(new FightScreen(new MyPokemonGame()));
         }
         
         if (Teleport.TeleportCasa(tiledMap, vertices)) {

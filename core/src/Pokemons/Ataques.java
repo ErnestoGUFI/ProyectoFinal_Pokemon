@@ -1,6 +1,5 @@
 package Pokemons;
 
-
 public class Ataques {
 	public String nombre;
 	public int damage;
@@ -10,10 +9,10 @@ public class Ataques {
 		this.damage = damage;
 	}
 	
-	public float atacar(Pokemon pokemon, float porcentajeVida) {
+	public float atacar(Pokemon pokemon) {
 		int vida = pokemon.vida - this.damage;
 		
-		porcentajeVida = (vida * 100) / pokemon.vida;
+		float porcentajeVida = (vida * 100) / pokemon.vida;
 		
 		return porcentajeVida;
 		

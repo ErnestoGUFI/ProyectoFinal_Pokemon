@@ -34,7 +34,7 @@ public class GameScreen implements Screen{
         viewport = new FitViewport(640, 300, camera);
         viewport.apply();
         
-        jugador = new Jugador();
+        jugador = new Jugador(game);
         controles = new Controles();
 
         
@@ -69,6 +69,11 @@ public class GameScreen implements Screen{
         
         //System.out.println(jugador.x+" "+jugador.y);
         
+        /*if(jugador.x < 500) {
+            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            game.setScreen(new FightScreen(new MyPokemonGame()));
+        }
+        */
     		
 	}
 
@@ -76,7 +81,6 @@ public class GameScreen implements Screen{
 	public void resize(int width, int height) {
         viewport.update(width, height);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        mapas[mapaActualIndex].resize(width, height);
 	}
 
 	@Override
