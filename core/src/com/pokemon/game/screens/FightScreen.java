@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,354 +20,280 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
-import Player.Controles;
+
 import Pokemons.Pokemon;
 
-public class FightScreen implements Screen{
-    
+
+public class FightScreen implements Screen {
+
     MyPokemonGame game;
-    
-    //Texturas de los sprites de la primera escena.
-    private Texture entrenadorSprite;
-    private Texture fondoInicioBatalla;
-    private Texture pokemonEnemigoSprite;
-    private Texture vsSprite;
-    //Texturas de los sprites de la batalla en si.
-    private Texture fondoBatalla;
-    private Texture pokemonAmigoSprite;
-    
-    //Animaciones
-    private int ySpriteJugador=0;
-    private int ySpriteEnemigo=369;
-    
-    //Timer que llevara el tiempo del juego.
+
+    // Textures for the initial scene and battle scene
+    private Texture entrenadorSprite, fondoInicioBatalla, pokemonEnemigoSprite, vsSprite;
+    private Texture fondoBatalla, pokemonAmigoSprite;
+
+    // Animation coordinates
+    private int ySpriteJugador = 0;
+    private int ySpriteEnemigo = 369;
+
+    // Timer for game time tracking
     Timer tiempo;
-    private int seg=0;
-    //Objeto de la clase ShapeRenderer que dibuja formas.
+    private int seg = 0;
+
+    // ShapeRenderer and BitmapFont for rendering shapes and text
     private ShapeRenderer sr;
-    //Objeto que escribe texto.
-    private BitmapFont text;
-    private FreeTypeFontGenerator generator;
-    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
-    
-    private BitmapFont text1;
-    private FreeTypeFontGenerator generator1;
-    private FreeTypeFontGenerator.FreeTypeFontParameter parameter1;
-    
-    
-    // Objetos necesarios para el desarrollo de la pelea.
+    private BitmapFont text, text1;
+
+    // Battle variables
     private float porcentajeJugador = 1f;
-    private float porcentajeEnemigo = 1f; 
-    
-    private int turno = 1 ;
-    
+    private float porcentajeEnemigo = 1f;
+    private int turno = 1;
+
     private OrthographicCamera cameraFight;
     private Viewport viewportFight;
-    
-    private Pokemon pokemonAmigo;
-    private Pokemon pokemonEnemigo;
-    
+
+    private Pokemon pokemonAmigo, pokemonEnemigo;
+
     private String narracion = "Elige un movimiento.";
-    
+
     private boolean paused = false;
     private float pauseTimer = 0f;
     private final float PAUSE_DURATION = 2f;
-    
-    
-    
+
+    private int selectedAttackIndex = 0; // Variable para llevar el seguimiento del ataque seleccionado
+
     public FightScreen(MyPokemonGame game) {
-    	 this.game = game;
-    	 this.game.batch = new SpriteBatch();
-    	 
-    	 cameraFight = new OrthographicCamera();
-    	 viewportFight = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), cameraFight);
-    	 viewportFight.apply();
-    	 
-    	 
-    	 entrenadorSprite = new Texture("entrenadorpelea.png");
-    	 fondoInicioBatalla = new Texture("fondoInicioBatalla.png");
-    	 pokemonEnemigoSprite = new Texture("squirtleSprite.png");
-    	 vsSprite = new Texture("vsSprite.png");
-    	 fondoBatalla = new Texture("fondoBatalla.png");
-    	 pokemonAmigoSprite = new Texture("bulbasaurSprite.png");
-    	 
-    	 
-    	 tiempo = new Timer(1000, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				seg++;
-			}
-    	 });
-    	 
-    	 
-    	 sr = new ShapeRenderer();
-    	 generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
-    	 parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    	 parameter.size = 18;
-    	 text = generator.generateFont(parameter);
-    	 generator.dispose();
-    	 
-    	 generator1 = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
-    	 parameter1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    	 parameter1.size = 16;
-    	 text1 = generator1.generateFont(parameter1);
-    	 generator1.dispose();
+        this.game = game;
+        this.game.batch = new SpriteBatch();
+
+        cameraFight = new OrthographicCamera();
+        viewportFight = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), cameraFight);
+        viewportFight.apply();
+
+        entrenadorSprite = new Texture("entrenadorpelea.png");
+        fondoInicioBatalla = new Texture("fondoInicioBatalla.png");
+        pokemonEnemigoSprite = new Texture("squirtleSprite.png");
+        vsSprite = new Texture("vsSprite.png");
+        fondoBatalla = new Texture("fondoBatalla.png");
+        pokemonAmigoSprite = new Texture("bulbasaurSprite.png");
+
+        tiempo = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                seg++;
+            }
+        });
+
+        sr = new ShapeRenderer();
+        initFonts();
+    }
+
+    private void initFonts() {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 18;
+        text = generator.generateFont(parameter);
+        generator.dispose();
+
+        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter1.size = 16;
+        text1 = generator1.generateFont(parameter1);
+        generator1.dispose();
+    }
+
+    @Override
+    public void show() {
+        pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero",
+                20, "Intimidacion", 21);
+        pokemonEnemigo = new Pokemon("Squirtle", 10, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15,
+                "Escudo", 20, "Intimidacion", 21);
+
+        tiempo.start();
+    }
+
+    @Override
+    public void render(float delta) {
+        if (paused) {
+            pauseTimer += delta;
+            if (pauseTimer >= PAUSE_DURATION) {
+                pauseTimer = 0f;
+                paused = false;
+                turno = 0;
+            }
+            return;
+        }
+
+        if (seg < 5) {
+        	introBatalla();
+        } else if (seg >= 5) {
+            if (turno == 0) {
+            	batallaScreen();
+                seleccionAtaque();
+            } else if (turno == 1) {
+            	turnoEnemigo();
+            }
+        }
+    }
+
+    private void seleccionAtaque() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            selectedAttackIndex = (selectedAttackIndex + 1) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            selectedAttackIndex = (selectedAttackIndex - 1 + 4) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            String selectedAttackName = pokemonAmigo.atacks[selectedAttackIndex].nombre;
+            System.out.println("Ataque seleccionado: " + selectedAttackName);
+        }
+    }
+
+    private void introBatalla() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        game.batch.begin();
+        game.batch.draw(fondoInicioBatalla, 0, 0, 1280, 720);
+        game.batch.draw(entrenadorSprite, 50, ySpriteJugador, 400, 400);
+        game.batch.draw(pokemonEnemigo.pokemonSprite, 770, ySpriteEnemigo, 500, 400);
+        game.batch.draw(vsSprite, 580, 300, 150, 170);
+
+        if (ySpriteJugador < 69)
+            ySpriteJugador++;
+        if (ySpriteEnemigo > 300)
+            ySpriteEnemigo--;
+
+        game.batch.end();
+    }
+
+    private void batallaScreen() {
+        Gdx.gl.glClearColor(240 / 255f, 240 / 255f, 240 / 255f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        game.batch.begin();
+        game.batch.draw(fondoBatalla, 48, 47, 1178, 630);
+        game.batch.end();
+
+        renderShapes();
+
+        game.batch.begin();
+        dibujarElementos();
+        game.batch.end();
     }
     
-	@Override
-	public void show() {
-		pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite,"Placaje", 15, "Latigo Cepa", 15, "Somnifero", 20, "Intimidacion", 21);
-		pokemonEnemigo = new Pokemon("Squirtle", 10, pokemonEnemigoSprite,"Placaje", 15, "Chorro de agua", 15, "Escudo", 20, "Intimidacion", 21);
-		
-		
+    private void renderShapes() {
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(new Color(205 / 255f, 205 / 255f, 205 / 255f, 0.8f));
+        sr.rect(48, 47, 1178, 150);
+        roundRect(sr, 90, 63, 520, 120, 20, new Color(175 / 255f, 175 / 255f, 175 / 255f, 0.8f));
+
+        roundRect(sr, 695, 130, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
+        roundRect(sr, 965, 130, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
+        roundRect(sr, 695, 58, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
+        roundRect(sr, 965, 58, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
+
+        roundRect(sr, 698, 135, 204, 42, 6, new Color(248 / 255f, 168 / 255f, 176 / 255f, 0.8f));
+
+        sr.setColor(new Color(240 / 255f, 240 / 255f, 240 / 255f, 1));
+        sr.rect(60, 565, 400, 100);
+        sr.rect(810, 210, 400, 100);
+
+        sr.setColor(Color.GREEN);
+        sr.rect(905, 230, 280 * porcentajeJugador, 10);
+        sr.rect(155, 585, 280 * porcentajeEnemigo, 10);
+
+        sr.end();
+    }
+    
+    private void dibujarElementos() {
+        // Dibuja Pokémon
+        game.batch.draw(pokemonAmigo.pokemonSprite, 250, 160, 300, 300);
+        game.batch.draw(pokemonEnemigo.pokemonSprite, 750, 360, 270, 220);
+
+        // Dibuja texto de narración
+        text.setColor(new Color(0, 0, 0, 0.8f));
+        text.draw(game.batch, narracion, 120f, 135f);
+
+        // Guardar el color actual para restablecerlo después
+        Color originalColor = text1.getColor().cpy();
+
+        // Dibuja nombres de ataques
+        for (int i = 0; i < 4; i++) {
+            float attackTextX = 740f;
+            float attackTextY = 160f - i * 70;
+            if (i >= 2) {
+                attackTextX = 1000f;
+                attackTextY = 160f - (i - 2) * 70;
+            }
+            if (i == selectedAttackIndex) {
+                text1.setColor(Color.YELLOW); // Cambia el color del texto del ataque seleccionado
+            } else {
+                text1.setColor(originalColor); // Restaura el color original
+            }
+            text1.draw(game.batch, pokemonAmigo.atacks[i].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+        }
+
+        // Restaurar el color original
+        text1.setColor(originalColor);
+
+        // Dibuja nombres de Pokémon
+        text1.draw(game.batch, pokemonAmigo.nombre, 250, 145);
+        text1.draw(game.batch, pokemonEnemigo.nombre, 750, 340);
+
+        // Dibuja barras de salud
+        text1.draw(game.batch, "Vida", 910f, 245f); 
+        text1.draw(game.batch, "Vida", 200f, 600f);
+    }
+
+
+    private void turnoEnemigo() {
+        Random random = new Random();
+        int attack = random.nextInt(4);
+        narracion = pokemonEnemigo.nombre + " ha usado " + pokemonEnemigo.atacks[attack].nombre;
+        turno = 2;
+        paused = true;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewportFight.update(width, height);
+    }
+
+    @Override
+    public void pause() {
+        tiempo.stop();
+    }
+
+    @Override
+    public void resume() {
         tiempo.start();
+    }
 
-        
-	}
+    @Override
+    public void hide() {
+        tiempo.stop();
+        dispose();
+    }
 
-	@Override
-	public void render(float delta) {
-		
-        //Toda la aniamcion de inicio de batalla dura 5 segundos, se realizara ese proceso utilizando el siguiente if.
-        if(seg<5) {
-    		Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        	game.batch.begin();
-        	//Dibujar las cosas.
-            game.batch.draw(fondoInicioBatalla, 0, 0,1280,720); //Este no sera dinamico
-            game.batch.draw(entrenadorSprite, 50, ySpriteJugador, 400, 400); // Este no sera dinamico
-            
-            //Dinamico para cada pokemon o entrenador, guardar un width y height o Guardar todos los sprites con mismo width y height
-            game.batch.draw(pokemonEnemigo.pokemonSprite, 770, ySpriteEnemigo, 500, 400);
-            
-            game.batch.draw(vsSprite, 580, 300, 150, 170); //Este no sera dinamico
-            
-            //Animaciones de los sprites del entrenador enemigo y jugador.
-            
-            if(ySpriteJugador<69) {
-            	ySpriteJugador++;
-            }
-            
-            if(ySpriteEnemigo>300) {
-            	ySpriteEnemigo--;
-            }
-            game.batch.end();
-        }
-        
-        if(seg>5) {
-        	if(turno == 0) {
-            	narracion = "Elige un movimiento.";
-            	pintarPantalla();
-            }
-            
-            if(turno == 1) {
-                
-                    pauseRendering();
-                    
-                    // Asegúrate de que los valores de color están en el rango correcto (0-1)
-                    Gdx.gl.glClearColor(240 / 255f, 240 / 255f, 240 / 255f, 1);
-                    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-                    Random rand = new Random();
-                    int selectorAtaque = rand.nextInt(4);
-
-                    narracion = pokemonEnemigo.nombre + " ha realizado " + pokemonEnemigo.atacks[selectorAtaque].nombre;
-
-                    game.batch.begin();
-                    
-                    // Dibujar fondo de la batalla
-                    game.batch.draw(fondoBatalla, 48, 47, 1178, 630);
-                    game.batch.end();
-
-                    // Dibujar utilizando el ShapeRenderer
-                    sr.begin(ShapeRenderer.ShapeType.Filled);
-                    sr.setColor(new Color(205 / 255f, 205 / 255f, 205 / 255f, 0.8f));
-                    sr.rect(48, 47, 1178, 150);
-                    roundRect(sr, 90, 63, 520, 120, 20, new Color(175 / 255f, 175 / 255f, 175 / 255f, 0.8f));
-                    
-                    // Rectángulos del ataque
-                    roundRect(sr, 695, 130, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
-                    roundRect(sr, 965, 130, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
-                    roundRect(sr, 695, 58, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
-                    roundRect(sr, 965, 58, 210, 52, 10, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.8f));
-                    
-                    // Rectángulo de ataque seleccionado
-                    roundRect(sr, 698, 135, 204, 42, 6, new Color(248 / 255f, 168 / 255f, 176 / 255f, 0.8f));
-                    
-                    // Rectángulos de enemigo y jugador
-                    sr.setColor(new Color(240 / 255f, 240 / 255f, 240 / 255f, 1));
-                    sr.rect(60, 565, 400, 100);
-                    sr.rect(810, 210, 400, 100);
-                    
-                    // Barra pokemon amigo
-                    sr.setColor(Color.GREEN);
-                    sr.rect(905, 230, 280 * porcentajeJugador, 10);
-                    
-                    // Barra pokemon enemigo
-                    sr.rect(155, 585, 280 * porcentajeEnemigo, 10);
-                    
-                    sr.end();
-                    
-                    game.batch.begin();
-                    
-                    // Dibujar los sprites de los pokemon
-                    game.batch.draw(pokemonAmigo.pokemonSprite, 250, 160, 300, 300);
-                    game.batch.draw(pokemonEnemigo.pokemonSprite, 750, 360, 270, 220);
-                    
-                    // Texto para los comentarios de lo que está pasando
-                    text.setColor(new Color(0, 0, 0, 0.8f));
-                    text.draw(game.batch, narracion, 120f, 135f);
-                    
-                    // Texto para el nombre de los ataques
-                    text1.setColor(new Color(0, 0, 0, 0.8f));
-                    text1.draw(game.batch, pokemonAmigo.atacks[0].nombre, 740f, 165f);
-                    text1.draw(game.batch, pokemonAmigo.atacks[1].nombre, 710f, 92f);
-                    text1.draw(game.batch, pokemonAmigo.atacks[2].nombre, 985f, 165f);
-                    text1.draw(game.batch, pokemonAmigo.atacks[3].nombre, 975f, 92f);
-                    
-                    // Texto para el apuntador de vida
-                    text1.draw(game.batch, "Vida", 825f, 245f); 
-                    text1.draw(game.batch, "Vida", 70f, 600f);
-                    
-                    // Texto para los nombres de los pokemon
-                    text1.draw(game.batch, pokemonAmigo.nombre, 825f, 295f); 
-                    text1.draw(game.batch, pokemonEnemigo.nombre, 70f, 650f);
-                    
-                    game.batch.end();
-                    
-            }
-        }
-        
-        
-        
-        
-        
-        
-        
-	}
-
-	@Override
-	public void resize(int width, int height) {
-	    viewportFight.update(width, height);
-	    cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
-	}
-
-
-	@Override
-	public void pause() {
-		
-	}
-
-	@Override
-	public void resume() {
-		
-	}
-
-	@Override
-	public void hide() {
-		
-	}
-
-	@Override
-	public void dispose() {
+    @Override
+    public void dispose() {
         game.batch.dispose();
-        if(seg>=5){
-        	sr.dispose();
-        	text.dispose();
-        }
-        
-	}
-	
-	public void roundRect(ShapeRenderer sr, int x, int y, int width, int height, int radio, Color color) {
-		sr.setColor(color);
-		
-		sr.rect(x, y, width, height);
-		
-		//Esquina inferior izquierda
-		sr.arc(x, y + radio, radio, 180, 90);
-		//Esquina superior izquierda
-		sr.arc(x, y + height - radio, radio, 90, 90);
-		
-		//Esquina inferior derecha
-		sr.arc(x + width, y + radio, radio, 270, 90);
-		//Esquina superior derecha
-		sr.arc(x + width, y + height - radio, radio, 0, 90);
-		
-		sr.rect(x - radio, y + radio, radio, height - (2*radio));
-		sr.rect(x + width, y + radio, radio, height - (2*radio));
-	}
-	
-	public void pintarPantalla() {
-       
-    	
-    	game.batch.begin();
-    	Gdx.gl.glClearColor(240, 240, 240, 1);
-    	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
-    	//Dibujar fondo de la batalla.
-    	game.batch.draw(fondoBatalla, 48, 47, 1178, 630);
-    	game.batch.end();
-    	
-    	//Dibujar utilizando el ShapeRenderer
-    	sr.begin(ShapeRenderer.ShapeType.Filled);
-    	sr.setColor(new Color(205/255f, 205/255f, 205/255f, 0.8f)); //Se divide entre 255 ya que el constructor no acepta valores mayores a 1.
-    	sr.rect(48, 47, 1178, 150);
-    	roundRect(sr, 90, 63, 520, 120, 20, new Color(175/255f, 175/255f, 175/255f,0.8f));
-    	
-    	//Rectangulos del ataque.
-    	roundRect(sr,695,130,210,52,10,new Color(255/255f, 0/255f, 0/255f,0.8f));
-    	roundRect(sr,965,130,210,52,10,new Color(255/255f, 0/255f, 0/255f,0.8f));
-    	roundRect(sr,695,58,210,52,10,new Color(255/255f, 0/255f, 0/255f,0.8f));
-    	roundRect(sr,965,58,210,52,10,new Color(255/255f, 0/255f, 0/255f,0.8f));
-    	
-    	//Rectangulo de ataque seleccionado.
-    	roundRect(sr,698,135,204,42,6,new Color(248/255f, 168/255f, 176/255f,0.8f)); //Este ira cambiando.
-    	
-    	//Rectangulos de enemigo y jugador
-    	sr.setColor(new Color(240,240,240,1));
-    	sr.rect(60,565,400,100);
-    	sr.rect(810,210,400,100);
-    	
-    	//Barra pokemon amigo.
-    	sr.setColor(Color.GREEN);
-    	sr.rect(905,230,280 * porcentajeJugador,10);
-    	
-    	//Barra pokemon enemigo.
-    	sr.rect(155,585,280 * porcentajeEnemigo,10);
-    	
-    	sr.end();
-    	
-    	game.batch.begin();
-    	
-    	//Dibujar los sprites de los pokemon.
-    	game.batch.draw(pokemonAmigo.pokemonSprite, 250,160,300,300);
-    	game.batch.draw(pokemonEnemigo.pokemonSprite, 750, 360, 270, 220);
-    	
-    	//Text para los comentarios de lo que esta pasando.
-    	text.setColor(new Color(0,0,0,0.8f));
-    	text.draw(game.batch, narracion, 120f,135f);
-    	
-    	//Text para el nombre de los ataques.
-    	text1.setColor(new Color(0,0,0,0.8f));
-    	text1.draw(game.batch, pokemonAmigo.atacks[0].nombre, 740f,165f);
-    	text1.draw(game.batch, pokemonAmigo.atacks[1].nombre, 710f,92f);
-    	text1.draw(game.batch, pokemonAmigo.atacks[2].nombre, 985f,165f);
-    	text1.draw(game.batch, pokemonAmigo.atacks[3].nombre, 975f,92f);
-    	
-    	//Text para el apuntador de vida.
-    	text1.draw(game.batch, "Vida", 825f, 245f); 
-    	text1.draw(game.batch, "Vida", 70f, 600f);
-    	
-    	//Text para los nombres de los pokemon.
-    	text1.draw(game.batch, pokemonAmigo.nombre, 825f, 295f); 
-    	text1.draw(game.batch, pokemonEnemigo.nombre, 70f, 650f);
-    	
-    	game.batch.end();
-    	
-	}
-	
-	public void pauseRendering() {
-		paused = true;
-	}
-	
+        sr.dispose();
+        entrenadorSprite.dispose();
+        fondoInicioBatalla.dispose();
+        pokemonEnemigoSprite.dispose();
+        vsSprite.dispose();
+        fondoBatalla.dispose();
+        pokemonAmigoSprite.dispose();
+        text.dispose();
+        text1.dispose();
+    }
+    
+    private void roundRect(ShapeRenderer renderer, float x, float y, float width, float height, float radius, Color color) {
+        renderer.setColor(color);
+        renderer.rect(x + radius, y, width - 2 * radius, height);
+        renderer.rect(x, y + radius, width, height - 2 * radius);
+        renderer.circle(x + radius, y + radius, radius);
+        renderer.circle(x + width - radius, y + radius, radius);
+        renderer.circle(x + radius, y + height - radius, radius);
+        renderer.circle(x + width - radius, y + height - radius, radius);
+    }
 }

@@ -19,7 +19,7 @@ public class MyPokemonGame extends Game {
     public void create () {
     	//El batch se crea aqui pero se manda como parametro para las demas clases screen.
         batch = new SpriteBatch();
-        setScreen(new MainScreen(this));
+        setScreen(new FightScreen(this));
         
 
     }
