@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.pokemon.game.MyPokemonGame;
+
+import Tutorial.TutorialScreen;
+
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
 
@@ -52,6 +55,7 @@ public class MainScreen extends ScreenAdapter {
                 if (keycode == Keys.ENTER) {
                     if (selectedY == 200) {
                         isButtonPressed = true;
+                        game.setScreen(new TutorialScreen(game));  // Cambia a TutorialScreen
                     } else if (selectedY == 100) {
                         Gdx.app.exit();
                     }
