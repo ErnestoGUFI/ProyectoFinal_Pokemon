@@ -23,7 +23,7 @@ public class GameScreen implements Screen{
     
     int tileWidth = 40;
     int tileHeight = 40;
-    MyPokemonGame game;
+    private MyPokemonGame game;
     
     public GameScreen(MyPokemonGame game) {
     	 this.game = game;
@@ -69,13 +69,7 @@ public class GameScreen implements Screen{
         jugador.dibujar(game.batch, controles);
         game.batch.end();
         
-        //System.out.println(jugador.x+" "+jugador.y);
-        
-        /*if(jugador.x < 500) {
-            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            game.setScreen(new FightScreen(new MyPokemonGame()));
-        }
-        */
+
     		
 	}
 

@@ -26,7 +26,7 @@ import Pokemons.Pokemon;
 
 public class FightScreen implements Screen {
 
-    MyPokemonGame game;
+    private MyPokemonGame game;
 
     // Textures for the initial scene and battle scene
     private Texture entrenadorSprite, fondoInicioBatalla, pokemonEnemigoSprite, vsSprite;
@@ -104,10 +104,15 @@ public class FightScreen implements Screen {
 
     @Override
     public void show() {
-        pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero",
-                20, "Intimidacion", 21);
-        pokemonEnemigo = new Pokemon("Squirtle", 100, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15,
-                "Escudo", 20, "Intimidacion", 21);
+        // Configuración de la cámara y el viewport
+        cameraFight = new OrthographicCamera();
+        viewportFight = new FitViewport(1280, 720, cameraFight);
+        cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
+        cameraFight.update();
+
+        // Inicialización de texturas, pokémon y otros elementos
+        pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero", 20, "Intimidacion", 21);
+        pokemonEnemigo = new Pokemon("Squirtle", 100, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15, "Escudo", 20, "Intimidacion", 21);
         
         narracion = "¿Que va a hacer " + pokemonAmigo.nombre + "?";
         
@@ -116,6 +121,9 @@ public class FightScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
         if (paused) {
             pauseTimer += delta;
             if (pauseTimer >= PAUSE_DURATION) {
@@ -125,22 +133,26 @@ public class FightScreen implements Screen {
             return;
         }
 
+        cameraFight.update();
+        game.batch.setProjectionMatrix(cameraFight.combined);
+        sr.setProjectionMatrix(cameraFight.combined);
+        
         if (seg < 5) {
-        	introBatalla();
+            introBatalla();
         } else if (seg >= 5) {
             if (turno) {
-            	batallaScreen();
+                batallaScreen();
                 seleccionAtaque();
             } else {
-            	paused = true;
-            	turnoEnemigo();
-            	turno = true;
+                paused = true;
+                turnoEnemigo();
+                turno = true;
             }
         }
         
         if(pokemonEnemigo.vida<=0){
             Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        	game.setScreen(new GameScreen(game));
+            game.setScreen(new GameScreen(game));
         }
     }
 
@@ -270,6 +282,8 @@ public class FightScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewportFight.update(width, height);
+        cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
+        cameraFight.update();
     }
 
     @Override

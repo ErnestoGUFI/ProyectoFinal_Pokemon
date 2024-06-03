@@ -23,7 +23,7 @@ public class Jugador {
     private int maxFrameCount = 10;
     
     
-    public MyPokemonGame pokemonGame;
+     MyPokemonGame pokemonGame;
     
     public Jugador(MyPokemonGame pokemonGame) {
         reiniciar();
@@ -110,7 +110,8 @@ public class Jugador {
          
         	System.out.println("Pelea Encontrada");
             Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        	pokemonGame.setScreen(new FightScreen(new MyPokemonGame()));
+        	pokemonGame.setScreen(new FightScreen(pokemonGame));
+        	
         }
 
         
