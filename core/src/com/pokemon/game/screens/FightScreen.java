@@ -324,5 +324,5 @@ public class FightScreen implements Screen {
         renderer.circle(x + width - radius, y + radius, radius);
         renderer.circle(x + radius, y + height - radius, radius);
         renderer.circle(x + width - radius, y + height - radius, radius);
-    }
+    } 
 }
