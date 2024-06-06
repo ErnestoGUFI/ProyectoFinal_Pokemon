@@ -31,7 +31,7 @@ public class Fight {
 
     // Animation coordinates
     public int ySpriteJugador = 0;
-    public int ySpriteEnemigo = 369;
+    public int ySpriteEnemigo = 520;
 
     // Timer for game time tracking
     Timer tiempo;
@@ -100,12 +100,13 @@ public class Fight {
         viewportFight.apply();
     }
 
-    public void seleccionAtaque() {
+    public boolean seleccionAtaque() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             selectedAttackIndex = (selectedAttackIndex + 1) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
             selectedAttackIndex = (selectedAttackIndex - 1 + 4) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+        	
             String selectedAttackName = pokemonAmigo.atacks[selectedAttackIndex].nombre;
             System.out.println("Ataque seleccionado: " + selectedAttackName);   
             if(porcentajeEnemigo > 0) {
@@ -113,19 +114,23 @@ public class Fight {
                 porcentajeEnemigo = (float)(pokemonAmigo.atacks[selectedAttackIndex].atacar(pokemonEnemigo));
                 turno = true;
             }
+            return true;
         }
+        
+        return false;
+        
     }
 
     public void introBatalla() {
         game.batch.begin();
         game.batch.draw(fondoInicioBatalla, 0, 0, 1280, 720);
         game.batch.draw(entrenadorSprite, 50, ySpriteJugador, 400, 400);
-        game.batch.draw(pokemonEnemigo.pokemonSprite, 770, ySpriteEnemigo, 500, 400);
+        game.batch.draw(pokemonEnemigo.pokemonSprite, 930, ySpriteEnemigo, 210, 210);
         game.batch.draw(vsSprite, 580, 300, 150, 170);
 
         if (ySpriteJugador < 69)
             ySpriteJugador++;
-        if (ySpriteEnemigo > 300)
+        if (ySpriteEnemigo > 451)
             ySpriteEnemigo--;
 
         game.batch.end();
@@ -218,6 +223,9 @@ public class Fight {
         int attack = random.nextInt(4);
         narracion = pokemonEnemigo.nombre + " ha usado " + pokemonEnemigo.atacks[attack].nombre;
         paused = true;
+        
+        porcentajeJugador = (float)(pokemonEnemigo.atacks[attack].atacar(pokemonAmigo));
+        
     }
 
     public void resize(int width, int height) {

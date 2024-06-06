@@ -167,8 +167,10 @@ public class GameScreen implements Screen {
         		game.batch.setProjectionMatrix(peleaScreen.cameraFight.combined);
         		
         		if (paused) {
+        			peleaScreen.batallaScreen();
                     pauseTimer += delta;
                     if (pauseTimer >= PAUSE_DURATION) {
+                    	peleaScreen.turnoEnemigo();
                         pauseTimer = 0f;
                         paused = false;
                     }
@@ -185,10 +187,11 @@ public class GameScreen implements Screen {
                 	if(tiempo.isRunning()) tiempo.stop();
                     if (turno) {
                     	peleaScreen.batallaScreen();
-                    	peleaScreen.seleccionAtaque();
+                    	if(peleaScreen.seleccionAtaque()) {
+                    		turno = false;
+                    	}
                     } else {
                         paused = true;
-                        peleaScreen.turnoEnemigo();
                         turno = true;
                     }
                 }
@@ -199,8 +202,9 @@ public class GameScreen implements Screen {
                 	arregloPokemon[pokemonRandom].vida = 100;
                 	pokemonRandom = -1;
                 	peleaScreen.ySpriteJugador = 0;
-                	peleaScreen.ySpriteEnemigo = 369;
+                	peleaScreen.ySpriteEnemigo = 520;
                 	peleaScreen.porcentajeEnemigo = 1f;
+                	peleaScreen.porcentajeJugador = 1f;
                 }
         	}
         	
