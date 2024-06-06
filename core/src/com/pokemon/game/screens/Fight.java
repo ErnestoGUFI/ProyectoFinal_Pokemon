@@ -38,7 +38,7 @@ public class Fight {
     private int seg = 0;
 
     // ShapeRenderer and BitmapFont for rendering shapes and text
-    private ShapeRenderer sr;
+    public ShapeRenderer sr;
     private BitmapFont text, text1;
 
     // Battle variables
@@ -46,10 +46,12 @@ public class Fight {
     private float porcentajeEnemigo = 1f;
     private boolean turno = true;
 
-    private OrthographicCamera cameraFight;
+    public OrthographicCamera cameraFight;
     private Viewport viewportFight;
 
-    private Pokemon pokemonAmigo, pokemonEnemigo;
+    private Pokemon pokemonAmigo;
+
+	Pokemon pokemonEnemigo;
 
     private String narracion;
 
@@ -83,24 +85,20 @@ public class Fight {
         
         sr = new ShapeRenderer();
         initFonts();
-    }
-    
-    private void initFonts() {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 18;
-        text = generator.generateFont(parameter);
-        generator.dispose();
-
-        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter1.size = 16;
-        text1 = generator1.generateFont(parameter1);
-        generator1.dispose();
-    }
-
-    public void show() {
-        // Configuración de la cámara y el viewport
+        
+        tiempo.start();
+        
+        // Inicialización de texturas, pokémon y otros elementos
+        pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero", 20, "Intimidacion", 21);
+        pokemonEnemigo = new Pokemon("Squirtle", 100, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15, "Escudo", 20, "Intimidacion", 21);
+        
+        narracion = "¿Que va a hacer " + pokemonAmigo.nombre + "?";
+        
+        cameraFight = new OrthographicCamera();
+        viewportFight = new FitViewport(1280, 720, cameraFight);
+        cameraFight.setToOrtho(false);
+        viewportFight.apply();
+        /*// Configuración de la cámara y el viewport
         cameraFight = new OrthographicCamera();
         viewportFight = new FitViewport(1280, 720, cameraFight);
         cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
@@ -112,13 +110,13 @@ public class Fight {
         
         narracion = "¿Que va a hacer " + pokemonAmigo.nombre + "?";
         
-        tiempo.start();
+        tiempo.start();*/
     }
 
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        cameraFight.update();
         
+        game.batch.setProjectionMatrix(cameraFight.combined);
         if (paused) {
             pauseTimer += delta;
             if (pauseTimer >= PAUSE_DURATION) {
@@ -131,7 +129,6 @@ public class Fight {
         cameraFight.update();
         game.batch.setProjectionMatrix(cameraFight.combined);
         sr.setProjectionMatrix(cameraFight.combined);
-        
         if (seg < 5) {
             introBatalla();
         } else if (seg >= 5) {
@@ -151,7 +148,7 @@ public class Fight {
         }
     }
 
-    private void seleccionAtaque() {
+    public void seleccionAtaque() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             selectedAttackIndex = (selectedAttackIndex + 1) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
@@ -159,18 +156,15 @@ public class Fight {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             String selectedAttackName = pokemonAmigo.atacks[selectedAttackIndex].nombre;
             System.out.println("Ataque seleccionado: " + selectedAttackName);   
-            if(pokemonEnemigo.vida > 0) {
+            if(porcentajeEnemigo > 0) {
             	narracion = (pokemonAmigo.nombre + " ha usado " + selectedAttackName);
                 porcentajeEnemigo = (float)(pokemonAmigo.atacks[selectedAttackIndex].atacar(pokemonEnemigo));
                 turno = true;
-                
             }
         }
     }
 
-    private void introBatalla() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    public void introBatalla() {
         game.batch.begin();
         game.batch.draw(fondoInicioBatalla, 0, 0, 1280, 720);
         game.batch.draw(entrenadorSprite, 50, ySpriteJugador, 400, 400);
@@ -185,7 +179,7 @@ public class Fight {
         game.batch.end();
     }
 
-    private void batallaScreen() {
+    public void batallaScreen() {
         Gdx.gl.glClearColor(240 / 255f, 240 / 255f, 240 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -200,7 +194,7 @@ public class Fight {
         game.batch.end();
     }
     
-    private void renderShapes() {
+    public void renderShapes() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(new Color(205 / 255f, 205 / 255f, 205 / 255f, 0.8f));
         sr.rect(48, 47, 1178, 150);
@@ -225,7 +219,7 @@ public class Fight {
         sr.end();
     }
     
-    private void dibujarElementos() {
+    public void dibujarElementos() {
         // Dibuja Pokémon
         game.batch.draw(pokemonAmigo.pokemonSprite, 490, 210, 150*(-1), 150);
         game.batch.draw(pokemonEnemigo.pokemonSprite, 785, 380, 150, 150);
@@ -267,7 +261,7 @@ public class Fight {
     }
 
 
-    private void turnoEnemigo() {
+    public void turnoEnemigo() {
         Random random = new Random();
         int attack = random.nextInt(4);
         narracion = pokemonEnemigo.nombre + " ha usado " + pokemonEnemigo.atacks[attack].nombre;
@@ -306,7 +300,7 @@ public class Fight {
         text1.dispose();
     }
     
-    private void roundRect(ShapeRenderer renderer, float x, float y, float width, float height, float radius, Color color) {
+    public void roundRect(ShapeRenderer renderer, float x, float y, float width, float height, float radius, Color color) {
         renderer.setColor(color);
         renderer.rect(x + radius, y, width - 2 * radius, height);
         renderer.rect(x, y + radius, width, height - 2 * radius);
@@ -316,6 +310,19 @@ public class Fight {
         renderer.circle(x + width - radius, y + height - radius, radius);
     }
 	
+    public void initFonts() {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 18;
+        text = generator.generateFont(parameter);
+        generator.dispose();
+
+        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter1.size = 16;
+        text1 = generator1.generateFont(parameter1);
+        generator1.dispose();
+    }
 	
 	
 }

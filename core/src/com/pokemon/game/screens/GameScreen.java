@@ -1,5 +1,10 @@
 package com.pokemon.game.screens;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,8 +31,10 @@ public class GameScreen implements Screen {
     private Pausa pausaScreen;
     public Musica musicaMapa;
     private boolean pelea = false;
-
+    private Fight peleaScreen;
+    private int seg = 0;
     private MyPokemonGame game;
+    private boolean turno = true;
     
     private Pokemon[] arregloPokemon = {
     		new Pokemon("Bulbasaur",100,new Texture("bulbasaurSprite.png"),"Placaje",20,"Latigo cepa",15,"Arañazo",12,"Embestida",20),
@@ -59,6 +66,11 @@ public class GameScreen implements Screen {
     		new Pokemon("Nidoking", 100, new Texture("nidokingSprite.png"), "Doble Patada", 20, "Picotazo Venenoso", 15, "Golpe Cabeza", 12, "Puya Nociva", 20)
     };
     
+    Timer tiempo;
+    
+    private boolean paused = false;
+    private float pauseTimer = 0f;
+    private final float PAUSE_DURATION = 2f;
     
     private Pokemon[] listaPokemon = {
     		arregloPokemon[0],
@@ -73,6 +85,18 @@ public class GameScreen implements Screen {
         this.game = game;
         musicaMapa = new Musica();
         musicaMapa.playMapMusic();
+        peleaScreen = new Fight(game);
+        
+        tiempo = new Timer(1000, new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				seg++;
+				System.out.println(seg);
+				
+			}
+        	
+        });
     }
 
     @Override
@@ -95,6 +119,7 @@ public class GameScreen implements Screen {
         pausaScreen = new Pausa(game);
 
         Gdx.input.setInputProcessor(controles);
+        
     }
 
     @Override
@@ -124,9 +149,48 @@ public class GameScreen implements Screen {
             jugador.dibujar(game.batch, controles);
             game.batch.end();
         } else {
+        	
         	if(pelea) {
+        		if(!tiempo.isRunning()) {
+        			tiempo.start();
+        		}
         		
+        		
+        		peleaScreen.cameraFight.update();
+        		game.batch.setProjectionMatrix(peleaScreen.cameraFight.combined);
+        		
+        		if (paused) {
+                    pauseTimer += delta;
+                    if (pauseTimer >= PAUSE_DURATION) {
+                        pauseTimer = 0f;
+                        paused = false;
+                    }
+                    return;
+                }
+                peleaScreen.cameraFight.update();
+                game.batch.setProjectionMatrix(peleaScreen.cameraFight.combined);
+                peleaScreen.sr.setProjectionMatrix(peleaScreen.cameraFight.combined);
+                
+                if (seg < 5) {
+                	System.out.println("seg<5");
+                	peleaScreen.introBatalla();
+                } else if (seg >= 5) {
+                	if(tiempo.isRunning()) tiempo.stop();
+                    if (turno) {
+                    	peleaScreen.batallaScreen();
+                    	peleaScreen.seleccionAtaque();
+                    } else {
+                        paused = true;
+                        peleaScreen.turnoEnemigo();
+                        turno = true;
+                    }
+                }
+                
+                if(peleaScreen.pokemonEnemigo.vida<=0) {
+                	pelea=false;
+                }
         	}
+        	
         	else {
                 pausaScreen.handleInput();
 
