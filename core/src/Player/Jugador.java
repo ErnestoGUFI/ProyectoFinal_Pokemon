@@ -37,7 +37,7 @@ public class Jugador {
         velocidad = 2;
     }
 
-    public void update(Controles controles, TiledMap tiledMap, GameScreen game) {
+    public boolean update(Controles controles, TiledMap tiledMap, GameScreen game) {
         //Estas son las anteriores posiciones del jugador en x,y.
         float oldX = x;
         float oldY = y;
@@ -115,12 +115,13 @@ public class Jugador {
         	
         	System.out.println("Pelea Encontrada");
         	game.stopMapMusic();
-            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        	return true;
+            /*Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         	pokemonGame.setScreen(new FightScreen(pokemonGame));
-        	
+        	*/
         }
-
         
+        return false;
     }
     
     public void dibujar(SpriteBatch batch, Controles controles) {
