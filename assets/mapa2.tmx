@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="41">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="49">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="272" columns="8">
   <image source="tiles.png" width="128" height="544"/>
  </tileset>
@@ -255,5 +255,15 @@
   <object id="37" x="-0.00607246" y="321.974" width="336.015" height="13.0313"/>
   <object id="38" x="329.016" y="0.154891" width="5.96875" height="321.798"/>
   <object id="39" x="705.023" y="0.165646" width="5.96875" height="321.798"/>
+  <object id="41" x="78.8707" y="536.871" width="6" height="6.0625"/>
+  <object id="42" x="79.8707" y="516.968" width="4.04688" height="19.9034"/>
+  <object id="43" x="134.917" y="536.949" width="6" height="6.0625"/>
+  <object id="44" x="135.917" y="516.955" width="4.04688" height="19.9943"/>
+  <object id="45" x="77.9357" y="462.87" width="6.08239" height="54.1506"/>
+  <object id="46" x="135.878" y="462.929" width="6.08239" height="54.0256"/>
+  <object id="47" x="84.0177" y="456.03" width="51.875" height="58.9403"/>
+  <object id="48" x="86" y="455.957">
+   <polygon points="0,0 23,-22.9787 25,-22.9565 48,0.0545894"/>
+  </object>
  </objectgroup>
 </map>

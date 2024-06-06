@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="26" height="26" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="2">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="26" height="26" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="17">
  <tileset firstgid="1" name="tilesCasa" tilewidth="16" tileheight="16" tilecount="2484" columns="54">
   <image source="tilesCasa.png" width="864" height="736"/>
  </tileset>
@@ -153,7 +153,23 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="Objetos"/>
+ <objectgroup id="4" name="Objetos">
+  <object id="2" x="63.6061" y="82.2727" width="56.2955" height="92.4773"/>
+  <object id="3" x="196" y="152" width="23.9375" height="23.875"/>
+  <object id="4" x="291.99" y="152.14" width="23.9375" height="23.875"/>
+  <object id="5" x="223.906" y="129.954" width="64.0773" height="62.0003"/>
+  <object id="6" x="321.875" y="255.875" width="38.875" height="95.875"/>
+  <object id="7" x="63.8636" y="269.818" width="32" height="66"/>
+  <object id="8" x="63.875" y="261.969" width="10.1563" height="7.78125"/>
+  <object id="9" x="161.994" y="65.998" width="56.0199" height="62"/>
+  <object id="10" x="322.008" y="70.1014" width="28.0625" height="57.875"/>
+  <object id="11" x="131.813" y="95.9375" width="24.125" height="32.0625"/>
+  <object id="12" x="56" y="52" width="7.83333" height="311.792"/>
+  <object id="13" x="352.04" y="52.2028" width="7.83333" height="311.792"/>
+  <object id="14" x="57.7528" y="96.8438" width="300.563" height="11.8125"/>
+  <object id="15" x="64" y="352" width="127.625" height="18.5"/>
+  <object id="16" x="239.945" y="351.902" width="127.625" height="18.5"/>
+ </objectgroup>
  <objectgroup id="5" name="Teleport">
   <object id="1" name="Volver" x="191.636" y="366.182" width="48.9091" height="8.72727"/>
  </objectgroup>
