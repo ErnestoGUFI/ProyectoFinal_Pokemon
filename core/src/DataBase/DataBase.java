@@ -23,7 +23,7 @@ public class DataBase {
         }
 
         // Establecer la conexión a la base de datos y ejecutar la consulta
-        String sql = "INSERT INTO nombre_usuario (nombre_usuario) VALUES (?)";
+        String sql = "INSERT INTO Jugador (Nombre) VALUES (?)";
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement statement = connection.prepareStatement(sql)) {
 

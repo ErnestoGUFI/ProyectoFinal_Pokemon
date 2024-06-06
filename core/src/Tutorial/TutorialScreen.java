@@ -12,6 +12,7 @@ import com.pokemon.game.MyPokemonGame;
 import com.pokemon.game.screens.GameScreen;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+import DataBase.DataBase;
 
 public class TutorialScreen extends ScreenAdapter {
     private MyPokemonGame game;
@@ -31,7 +32,6 @@ public class TutorialScreen extends ScreenAdapter {
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(2.0f);
-        
 
         // Cargar las imágenes del tutorial
         tutorialImages = new Array<>();
@@ -49,23 +49,29 @@ public class TutorialScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-                if (currentImageIndex == 5) {
-                    if (keycode == Keys.ENTER) {
-                        // Continuar con el juego una vez ingresado el nombre
-                        game.setScreen(new GameScreen(game));
-                        dispose();
+                if (enteringName) {
+                    if (keycode == Keys.ENTER && playerName.length() > 0) {
+                        enteringName = false;
+                        currentImageIndex++;
                     } else if (keycode == Keys.BACKSPACE && playerName.length() > 0) {
                         playerName.deleteCharAt(playerName.length() - 1);
                     }
-                    return true;
                 } else {
                     if (keycode == Keys.ENTER) {
-                        if (currentImageIndex < tutorialImages.size - 1) {
+                        if (currentImageIndex == 2 && playerName.length() == 0) {
+                            // No avanzar si no se ha ingresado un nombre en la pantalla 2
+                            return true;
+                        } else if (currentImageIndex < tutorialImages.size - 1) {
                             currentImageIndex++;
                             if (currentImageIndex == 2) {
                                 enteringName = true;
-                            } else if (currentImageIndex > 2) {
-                                enteringName = false;
+                            }
+                        } else {
+                            // Guardar el nombre y avanzar a la pantalla del juego en la última imagen
+                            if (currentImageIndex == tutorialImages.size - 1) {
+                                DataBase.saveUserName(playerName.toString());
+                                game.setScreen(new GameScreen(game));
+                                dispose();
                             }
                         }
                         return true;
