@@ -2,6 +2,7 @@ package com.pokemon.game.screens;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.Timer;
 
@@ -72,6 +73,8 @@ public class GameScreen implements Screen {
     private float pauseTimer = 0f;
     private final float PAUSE_DURATION = 2f;
     
+    int pokemonRandom = -1;
+    
     private Pokemon[] listaPokemon = {
     		arregloPokemon[0],
     		arregloPokemon[5],
@@ -86,6 +89,7 @@ public class GameScreen implements Screen {
         musicaMapa = new Musica();
         musicaMapa.playMapMusic();
         peleaScreen = new Fight(game);
+        
         
         tiempo = new Timer(1000, new ActionListener() {
 
@@ -149,10 +153,13 @@ public class GameScreen implements Screen {
             jugador.dibujar(game.batch, controles);
             game.batch.end();
         } else {
-        	
         	if(pelea) {
-        		if(!tiempo.isRunning()) {
+        		if(!tiempo.isRunning() && pokemonRandom == -1) {
         			tiempo.start();
+        			Random rand = new Random();
+        			pokemonRandom = rand.nextInt(arregloPokemon.length);
+        			
+        			peleaScreen.setPokemonEnemigo(arregloPokemon[pokemonRandom]);
         		}
         		
         		
@@ -188,6 +195,12 @@ public class GameScreen implements Screen {
                 
                 if(peleaScreen.pokemonEnemigo.vida<=0) {
                 	pelea=false;
+                	seg = 0;
+                	arregloPokemon[pokemonRandom].vida = 100;
+                	pokemonRandom = -1;
+                	peleaScreen.ySpriteJugador = 0;
+                	peleaScreen.ySpriteEnemigo = 369;
+                	peleaScreen.porcentajeEnemigo = 1f;
                 }
         	}
         	

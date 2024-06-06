@@ -30,8 +30,8 @@ public class Fight {
     private Texture fondoBatalla, pokemonAmigoSprite;
 
     // Animation coordinates
-    private int ySpriteJugador = 0;
-    private int ySpriteEnemigo = 369;
+    public int ySpriteJugador = 0;
+    public int ySpriteEnemigo = 369;
 
     // Timer for game time tracking
     Timer tiempo;
@@ -42,8 +42,8 @@ public class Fight {
     private BitmapFont text, text1;
 
     // Battle variables
-    private float porcentajeJugador = 1f;
-    private float porcentajeEnemigo = 1f;
+    public float porcentajeJugador = 1f;
+    public float porcentajeEnemigo = 1f;
     private boolean turno = true;
 
     public OrthographicCamera cameraFight;
@@ -98,54 +98,6 @@ public class Fight {
         viewportFight = new FitViewport(1280, 720, cameraFight);
         cameraFight.setToOrtho(false);
         viewportFight.apply();
-        /*// Configuración de la cámara y el viewport
-        cameraFight = new OrthographicCamera();
-        viewportFight = new FitViewport(1280, 720, cameraFight);
-        cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
-        cameraFight.update();
-
-        // Inicialización de texturas, pokémon y otros elementos
-        pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero", 20, "Intimidacion", 21);
-        pokemonEnemigo = new Pokemon("Squirtle", 100, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15, "Escudo", 20, "Intimidacion", 21);
-        
-        narracion = "¿Que va a hacer " + pokemonAmigo.nombre + "?";
-        
-        tiempo.start();*/
-    }
-
-    public void render(float delta) {
-        cameraFight.update();
-        
-        game.batch.setProjectionMatrix(cameraFight.combined);
-        if (paused) {
-            pauseTimer += delta;
-            if (pauseTimer >= PAUSE_DURATION) {
-                pauseTimer = 0f;
-                paused = false;
-            }
-            return;
-        }
-
-        cameraFight.update();
-        game.batch.setProjectionMatrix(cameraFight.combined);
-        sr.setProjectionMatrix(cameraFight.combined);
-        if (seg < 5) {
-            introBatalla();
-        } else if (seg >= 5) {
-            if (turno) {
-                batallaScreen();
-                seleccionAtaque();
-            } else {
-                paused = true;
-                turnoEnemigo();
-                turno = true;
-            }
-        }
-        
-        if(pokemonEnemigo.vida<=0){
-            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            game.setScreen(new GameScreen(game));
-        }
     }
 
     public void seleccionAtaque() {
@@ -322,6 +274,11 @@ public class Fight {
         parameter1.size = 16;
         text1 = generator1.generateFont(parameter1);
         generator1.dispose();
+    }
+    
+    public void setPokemonEnemigo(Pokemon pokemonEnemigo) {
+    	this.pokemonEnemigo = pokemonEnemigo;
+    	this.pokemonEnemigoSprite = pokemonEnemigo.pokemonSprite;
     }
 	
 	
