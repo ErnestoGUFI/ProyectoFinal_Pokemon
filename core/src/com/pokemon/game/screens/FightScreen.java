@@ -109,6 +109,8 @@ public class FightScreen implements Screen {
         viewportFight = new FitViewport(1280, 720, cameraFight);
         cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
         cameraFight.update();
+        
+
 
         // Inicialización de texturas, pokémon y otros elementos
         pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero", 20, "Intimidacion", 21);

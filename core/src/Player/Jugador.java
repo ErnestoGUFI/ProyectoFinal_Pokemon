@@ -10,6 +10,7 @@ import com.pokemon.game.MyPokemonGame;
 import com.pokemon.game.screens.FightScreen;
 import com.pokemon.game.screens.GameScreen;
 
+import Audio.Musica;
 import Maps.Colisiones;
 import Maps.Teleport;
 
@@ -21,8 +22,7 @@ public class Jugador {
     private TexturaManager texturaManager;
     private int frameCount;
     private int maxFrameCount = 10;
-    
-    
+
      MyPokemonGame pokemonGame;
     
     public Jugador(MyPokemonGame pokemonGame) {
@@ -89,26 +89,32 @@ public class Jugador {
         
         if (Teleport.TeleportMapa1(tiledMap, vertices)) {
             cambiarMapa(game, 0, -3, 655); // Coordenadas para mapa1
+            
         }
         
         if (Teleport.TeleportMapa2(tiledMap, vertices)) {
             cambiarMapa(game, 1, 1015, 655); // Coordenadas para mapa2
+            
         }
         
         if (Teleport.TeleportTienda(tiledMap, vertices)) {
             cambiarMapa(game, 3, 300, 200); // Coordenadas para tienda
+            
         }
         
         if (Teleport.TeleportCasa(tiledMap, vertices)) {
             cambiarMapa(game, 2, 207, 49); // Coordenadas para casa
+            
         }
         
         if (Teleport.TeleportVolver(tiledMap, vertices)) {
             cambiarMapa(game, 0, 888, 98); // Coordenadas para casa
+            
         }
         if (Teleport.TeleportArbusto(tiledMap, vertices) && randomNumber == 7) {
-         
+        	
         	System.out.println("Pelea Encontrada");
+        	game.stopMapMusic();
             Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         	pokemonGame.setScreen(new FightScreen(pokemonGame));
         	

@@ -42,7 +42,6 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
@@ -51,9 +50,11 @@ project(":desktop") {
         api "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
-        
+        // Agregar la dependencia del conector JDBC de MySQL
+        api 'mysql:mysql-connector-java:8.0.32'
     }
 }
+
 
 project(":core") {
     apply plugin: "java-library"

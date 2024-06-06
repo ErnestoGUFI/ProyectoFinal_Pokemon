@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.pokemon.game.MyPokemonGame;
 
+import Audio.Musica;
+import Audio.Sonido;
 import Tutorial.TutorialScreen;
 
 import com.badlogic.gdx.InputAdapter;
@@ -27,12 +29,21 @@ public class MainScreen extends ScreenAdapter {
     private boolean isButtonPressed = false;
     private float selectedY;
     private long startTime;
+    private Musica musicaMenu;
+    private Sonido sonidoPresionado;
+    private Sonido cambiarOpcion;
 
     public MainScreen(MyPokemonGame game) {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         background = new Texture("BackgroundMenu.png");
+        
+        musicaMenu = new Musica();
+        musicaMenu.playMenuMusic();
+        
+        sonidoPresionado = new Sonido();
+        cambiarOpcion = new Sonido();
 
         // Cargar y configurar la fuente personalizada
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
@@ -55,6 +66,8 @@ public class MainScreen extends ScreenAdapter {
                 if (keycode == Keys.ENTER) {
                     if (selectedY == 200) {
                         isButtonPressed = true;
+                        sonidoPresionado.playPressedSound();
+                        musicaMenu.stopMenuMusic();
                         game.setScreen(new TutorialScreen(game));  // Cambia a TutorialScreen
                     } else if (selectedY == 100) {
                         Gdx.app.exit();
@@ -63,10 +76,12 @@ public class MainScreen extends ScreenAdapter {
                 }
                 if ((keycode == Keys.S || keycode == Keys.DOWN) && selectedY == 200) {
                     selectedY = 100;
+                    cambiarOpcion.playCambiarOpcion();
                     return true;
                 }
                 if ((keycode == Keys.W || keycode == Keys.UP) && selectedY == 100) {
                     selectedY = 200;
+                    cambiarOpcion.playCambiarOpcion();
                     return true;
                 }
                 return false;
@@ -148,5 +163,7 @@ public class MainScreen extends ScreenAdapter {
         font.dispose();
         selectedFont.dispose();
         instructionFont.dispose();
+        musicaMenu.dispose();
+        sonidoPresionado.dispose();
     }
 }

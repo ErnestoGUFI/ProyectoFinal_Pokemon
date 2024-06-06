@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
 
+import Audio.Musica;
 import Maps.Mapa;
 import Player.Controles;
 import Player.Jugador;
@@ -21,11 +22,14 @@ public class GameScreen implements Screen {
     private int mapaActualIndex;
     private boolean isPaused;
     private Pausa pausaScreen;
+    public Musica musicaMapa;
 
     private MyPokemonGame game;
 
     public GameScreen(MyPokemonGame game) {
         this.game = game;
+        musicaMapa = new Musica();
+        musicaMapa.playMapMusic();
     }
 
     @Override
@@ -36,6 +40,7 @@ public class GameScreen implements Screen {
 
         jugador = new Jugador(game);
         controles = new Controles();
+       
 
         mapas = new Mapa[] {
             new Mapa("mapa.tmx", camera),
@@ -51,9 +56,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+    	
+        
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
             if (isPaused==false) {
                 pause();
+                //musicaMapa.pauseMapMusic();
             } 
         }
 
@@ -98,6 +106,7 @@ public class GameScreen implements Screen {
     @Override
     public void pause() {
         isPaused = true;
+      //Musica del mapa
     }
 
     @Override
@@ -109,13 +118,14 @@ public class GameScreen implements Screen {
     @Override
     public void hide() {
     }
+   
 
     @Override
     public void dispose() {
         game.batch.dispose();
         jugador.dispose();
         pausaScreen.dispose();
-
+        musicaMapa.dispose();
         for (Mapa mapa : mapas) {
             mapa.dispose();
         }
@@ -126,5 +136,9 @@ public class GameScreen implements Screen {
             mapaActualIndex = nuevoIndice;
             jugador.setPosition(nuevaPosX, nuevaPosY);
         }
+    }
+    
+    public void stopMapMusic() {
+        musicaMapa.stopMapMusic();
     }
 }
