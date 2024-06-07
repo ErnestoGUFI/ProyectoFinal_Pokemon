@@ -10,6 +10,8 @@ public class Sonido {
     private Sound opcion;
     private Sound caminar;
     private Sound ataque;
+    private Sound curar;
+    private Sound error;
     
     public Sonido() {
   
@@ -17,6 +19,8 @@ public class Sonido {
     	 opcion = Gdx.audio.newSound(Gdx.files.internal("Audio/CambiarOpcion.mp3"));
     	 caminar = Gdx.audio.newSound(Gdx.files.internal("Audio/CaminarSonido.mp3"));
     	 ataque = Gdx.audio.newSound(Gdx.files.internal("Audio/explosion.mp3"));
+    	 curar = Gdx.audio.newSound(Gdx.files.internal("Audio/health.mp3"));
+    	 error = Gdx.audio.newSound(Gdx.files.internal("Audio/error.mp3"));
     }
     
     public void playPressedSound() {
@@ -39,6 +43,14 @@ public class Sonido {
     
     public void playAtaqueSonido() {
     	ataque.play(2);
+    }
+    
+    public void playHealth() {
+    	curar.play(2);
+    }
+    
+    public void playError() {
+    	error.play(2);
     }
     
     

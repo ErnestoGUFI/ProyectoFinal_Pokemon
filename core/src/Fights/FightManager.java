@@ -114,7 +114,7 @@ public class FightManager {
             if (turno) {
                 peleaScreen.batallaScreen();
                 if (peleaScreen.seleccionAtaque()) {
-                    playSonidoAtaque(); // Reproducir sonido de ataque del jugador
+                    
                     turno = false;
                 }
             } else {
