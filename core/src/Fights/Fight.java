@@ -220,7 +220,8 @@ public class Fight {
 
     // Método para la pantalla de batalla
     public void batallaScreen() {
-        Gdx.gl.glClearColor(240 / 255f, 240 / 255f, 240 / 255f, 1);
+        
+    	Gdx.gl.glClearColor(240 / 255f, 240 / 255f, 240 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
