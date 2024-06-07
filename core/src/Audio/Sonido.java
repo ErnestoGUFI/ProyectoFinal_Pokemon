@@ -9,12 +9,14 @@ public class Sonido {
     private Sound pressed;
     private Sound opcion;
     private Sound caminar;
+    private Sound ataque;
     
     public Sonido() {
   
-    	 pressed = Gdx.audio.newSound(Gdx.files.internal("Presionado.mp3"));
-    	 opcion = Gdx.audio.newSound(Gdx.files.internal("CambiarOpcion.mp3"));
-    	 caminar = Gdx.audio.newSound(Gdx.files.internal("CaminarSonido.mp3"));
+    	 pressed = Gdx.audio.newSound(Gdx.files.internal("Audio/Presionado.mp3"));
+    	 opcion = Gdx.audio.newSound(Gdx.files.internal("Audio/CambiarOpcion.mp3"));
+    	 caminar = Gdx.audio.newSound(Gdx.files.internal("Audio/CaminarSonido.mp3"));
+    	 ataque = Gdx.audio.newSound(Gdx.files.internal("Audio/explosion.mp3"));
     }
     
     public void playPressedSound() {
@@ -34,6 +36,12 @@ public class Sonido {
     public void stopCaminarSonido() {
     	caminar.stop();
     }
+    
+    public void playAtaqueSonido() {
+    	ataque.play(2);
+    }
+    
+    
     
     public void dispose() {
         // Libera los recursos de música y sonido

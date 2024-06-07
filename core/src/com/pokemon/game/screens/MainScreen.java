@@ -37,7 +37,7 @@ public class MainScreen extends ScreenAdapter {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        background = new Texture("BackgroundMenu.png");
+        background = new Texture("Screen/BackgroundMenu.png");
         
         musicaMenu = new Musica();
         musicaMenu.playMenuMusic();

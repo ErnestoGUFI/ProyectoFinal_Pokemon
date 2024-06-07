@@ -1,4 +1,4 @@
-package com.pokemon.game.screens;
+package Fights;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,13 +8,11 @@ import javax.swing.Timer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -23,36 +21,37 @@ import com.pokemon.game.MyPokemonGame;
 
 import Pokemons.Pokemon;
 
-
-public class FightScreen implements Screen {
-
-    private MyPokemonGame game;
+public class Fight {
+	
+	private MyPokemonGame game;
 
     // Textures for the initial scene and battle scene
     private Texture entrenadorSprite, fondoInicioBatalla, pokemonEnemigoSprite, vsSprite;
     private Texture fondoBatalla, pokemonAmigoSprite;
 
     // Animation coordinates
-    private int ySpriteJugador = 0;
-    private int ySpriteEnemigo = 369;
+    public int ySpriteJugador = 0;
+    public int ySpriteEnemigo = 520;
 
     // Timer for game time tracking
     Timer tiempo;
     private int seg = 0;
 
     // ShapeRenderer and BitmapFont for rendering shapes and text
-    private ShapeRenderer sr;
+    public ShapeRenderer sr;
     private BitmapFont text, text1;
 
     // Battle variables
-    private float porcentajeJugador = 1f;
-    private float porcentajeEnemigo = 1f;
+    public float porcentajeJugador = 1f;
+    public float porcentajeEnemigo = 1f;
     private boolean turno = true;
 
-    private OrthographicCamera cameraFight;
+    public OrthographicCamera cameraFight;
     private Viewport viewportFight;
 
-    private Pokemon pokemonAmigo, pokemonEnemigo;
+    private Pokemon pokemonAmigo;
+
+	Pokemon pokemonEnemigo;
 
     private String narracion;
 
@@ -61,21 +60,23 @@ public class FightScreen implements Screen {
     private final float PAUSE_DURATION = 2f;
 
     private int selectedAttackIndex = 0; // Variable para llevar el seguimiento del ataque seleccionado
+    
+    
 
-    public FightScreen(MyPokemonGame game) {
+    
+    public Fight(MyPokemonGame game) {
         this.game = game;
-        this.game.batch = new SpriteBatch();
 
         cameraFight = new OrthographicCamera();
         viewportFight = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), cameraFight);
         viewportFight.apply();
 
-        entrenadorSprite = new Texture("entrenadorpelea.png");
-        fondoInicioBatalla = new Texture("fondoInicioBatalla.png");
-        pokemonEnemigoSprite = new Texture("squirtleSprite.png");
-        vsSprite = new Texture("vsSprite.png");
-        fondoBatalla = new Texture("fondoBatalla.png");
-        pokemonAmigoSprite = new Texture("bulbasaurSprite.png");
+        entrenadorSprite = new Texture("Screen/entrenadorpelea.png");
+        fondoInicioBatalla = new Texture("Screen/fondoInicioBatalla.png");
+        pokemonEnemigoSprite = new Texture("Pokemons/charmanderSprite.png");
+        vsSprite = new Texture("Screen/vsSprite.png");
+        fondoBatalla = new Texture("Screen/fondoBatalla.png");
+        pokemonAmigoSprite = new Texture("Pokemons/bulbasaurSprite.png");
 
         tiempo = new Timer(1000, new ActionListener() {
             @Override
@@ -83,116 +84,61 @@ public class FightScreen implements Screen {
                 seg++;
             }
         });
-
+        
         sr = new ShapeRenderer();
         initFonts();
-    }
-
-    private void initFonts() {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 18;
-        text = generator.generateFont(parameter);
-        generator.dispose();
-
-        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter1.size = 16;
-        text1 = generator1.generateFont(parameter1);
-        generator1.dispose();
-    }
-
-    @Override
-    public void show() {
-        // Configuración de la cámara y el viewport
-        cameraFight = new OrthographicCamera();
-        viewportFight = new FitViewport(1280, 720, cameraFight);
-        cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
-        cameraFight.update();
         
-
-
+        tiempo.start();
+        
         // Inicialización de texturas, pokémon y otros elementos
         pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero", 20, "Intimidacion", 21);
         pokemonEnemigo = new Pokemon("Squirtle", 100, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15, "Escudo", 20, "Intimidacion", 21);
         
         narracion = "¿Que va a hacer " + pokemonAmigo.nombre + "?";
         
-        tiempo.start();
+        cameraFight = new OrthographicCamera();
+        viewportFight = new FitViewport(1280, 720, cameraFight);
+        cameraFight.setToOrtho(false);
+        viewportFight.apply();
     }
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
-        if (paused) {
-            pauseTimer += delta;
-            if (pauseTimer >= PAUSE_DURATION) {
-                pauseTimer = 0f;
-                paused = false;
-            }
-            return;
-        }
-
-        cameraFight.update();
-        game.batch.setProjectionMatrix(cameraFight.combined);
-        sr.setProjectionMatrix(cameraFight.combined);
-        
-        if (seg < 5) {
-            introBatalla();
-        } else if (seg >= 5) {
-            if (turno) {
-                batallaScreen();
-                seleccionAtaque();
-            } else {
-                paused = true;
-                turnoEnemigo();
-                turno = true;
-            }
-        }
-        
-        if(pokemonEnemigo.vida<=0){
-            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            game.setScreen(new GameScreen(game));
-        }
-    }
-
-    private void seleccionAtaque() {
+    public boolean seleccionAtaque() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             selectedAttackIndex = (selectedAttackIndex + 1) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
             selectedAttackIndex = (selectedAttackIndex - 1 + 4) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+        	
             String selectedAttackName = pokemonAmigo.atacks[selectedAttackIndex].nombre;
             System.out.println("Ataque seleccionado: " + selectedAttackName);   
-            if(pokemonEnemigo.vida > 0) {
+            if(porcentajeEnemigo > 0) {
             	narracion = (pokemonAmigo.nombre + " ha usado " + selectedAttackName);
                 porcentajeEnemigo = (float)(pokemonAmigo.atacks[selectedAttackIndex].atacar(pokemonEnemigo));
                 turno = true;
-                
             }
+            return true;
         }
+        
+        return false;
+        
     }
 
-    private void introBatalla() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    public void introBatalla() {
         game.batch.begin();
         game.batch.draw(fondoInicioBatalla, 0, 0, 1280, 720);
         game.batch.draw(entrenadorSprite, 50, ySpriteJugador, 400, 400);
-        game.batch.draw(pokemonEnemigo.pokemonSprite, 770, ySpriteEnemigo, 500, 400);
+        game.batch.draw(pokemonEnemigo.pokemonSprite, 930, ySpriteEnemigo, 210, 210);
         game.batch.draw(vsSprite, 580, 300, 150, 170);
 
         if (ySpriteJugador < 69)
             ySpriteJugador++;
-        if (ySpriteEnemigo > 300)
+        if (ySpriteEnemigo > 451)
             ySpriteEnemigo--;
 
         game.batch.end();
     }
 
-    private void batallaScreen() {
+    public void batallaScreen() {
         Gdx.gl.glClearColor(240 / 255f, 240 / 255f, 240 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -207,7 +153,7 @@ public class FightScreen implements Screen {
         game.batch.end();
     }
     
-    private void renderShapes() {
+    public void renderShapes() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(new Color(205 / 255f, 205 / 255f, 205 / 255f, 0.8f));
         sr.rect(48, 47, 1178, 150);
@@ -232,10 +178,10 @@ public class FightScreen implements Screen {
         sr.end();
     }
     
-    private void dibujarElementos() {
+    public void dibujarElementos() {
         // Dibuja Pokémon
-        game.batch.draw(pokemonAmigo.pokemonSprite, 250, 160, 300, 300);
-        game.batch.draw(pokemonEnemigo.pokemonSprite, 750, 360, 270, 220);
+        game.batch.draw(pokemonAmigo.pokemonSprite, 490, 210, 150*(-1), 150);
+        game.batch.draw(pokemonEnemigo.pokemonSprite, 785, 380, 150, 150);
 
         // Dibuja texto de narración
         text.setColor(new Color(0, 0, 0, 0.8f));
@@ -274,37 +220,36 @@ public class FightScreen implements Screen {
     }
 
 
-    private void turnoEnemigo() {
+    public void turnoEnemigo() {
         Random random = new Random();
         int attack = random.nextInt(4);
+        
         narracion = pokemonEnemigo.nombre + " ha usado " + pokemonEnemigo.atacks[attack].nombre;
         paused = true;
+        
+        porcentajeJugador = (float)(pokemonEnemigo.atacks[attack].atacar(pokemonAmigo));
+        
     }
 
-    @Override
     public void resize(int width, int height) {
         viewportFight.update(width, height);
         cameraFight.position.set(cameraFight.viewportWidth / 2, cameraFight.viewportHeight / 2, 0);
         cameraFight.update();
     }
 
-    @Override
     public void pause() {
         tiempo.stop();
     }
 
-    @Override
     public void resume() {
         tiempo.start();
     }
 
-    @Override
     public void hide() {
         tiempo.stop();
         dispose();
     }
 
-    @Override
     public void dispose() {
         game.batch.dispose();
         sr.dispose();
@@ -318,7 +263,7 @@ public class FightScreen implements Screen {
         text1.dispose();
     }
     
-    private void roundRect(ShapeRenderer renderer, float x, float y, float width, float height, float radius, Color color) {
+    public void roundRect(ShapeRenderer renderer, float x, float y, float width, float height, float radius, Color color) {
         renderer.setColor(color);
         renderer.rect(x + radius, y, width - 2 * radius, height);
         renderer.rect(x, y + radius, width, height - 2 * radius);
@@ -326,5 +271,26 @@ public class FightScreen implements Screen {
         renderer.circle(x + width - radius, y + radius, radius);
         renderer.circle(x + radius, y + height - radius, radius);
         renderer.circle(x + width - radius, y + height - radius, radius);
-    } 
+    }
+	
+    public void initFonts() {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 18;
+        text = generator.generateFont(parameter);
+        generator.dispose();
+
+        FreeTypeFontGenerator generator1 = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter1 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter1.size = 16;
+        text1 = generator1.generateFont(parameter1);
+        generator1.dispose();
+    }
+    
+    public void setPokemonEnemigo(Pokemon pokemonEnemigo) {
+    	this.pokemonEnemigo = pokemonEnemigo;
+    	this.pokemonEnemigoSprite = pokemonEnemigo.pokemonSprite;
+    }
+	
+	
 }

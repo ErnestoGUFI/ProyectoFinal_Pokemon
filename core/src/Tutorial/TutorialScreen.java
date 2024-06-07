@@ -35,12 +35,12 @@ public class TutorialScreen extends ScreenAdapter {
 
         // Cargar las imágenes del tutorial
         tutorialImages = new Array<>();
-        tutorialImages.add(new Texture("image1.png"));
-        tutorialImages.add(new Texture("image2.png"));
-        tutorialImages.add(new Texture("image3.png"));
-        tutorialImages.add(new Texture("image4.png"));
-        tutorialImages.add(new Texture("image5.png"));
-        tutorialImages.add(new Texture("image6.png"));
+        tutorialImages.add(new Texture("Screen/image1.png"));
+        tutorialImages.add(new Texture("Screen/image2.png"));
+        tutorialImages.add(new Texture("Screen/image3.png"));
+        tutorialImages.add(new Texture("Screen/image4.png"));
+        tutorialImages.add(new Texture("Screen/image5.png"));
+        tutorialImages.add(new Texture("Screen/image6.png"));
 
         currentImageIndex = 0;
         enteringName = false;

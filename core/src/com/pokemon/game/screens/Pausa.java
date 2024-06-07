@@ -29,7 +29,7 @@ public class Pausa {
         setPauseViewport(new FitViewport(1280, 720, pauseCamera));
         pauseCamera.setToOrtho(false);
 
-        background = new Texture("PauseBackground.png");
+        background = new Texture("Screen/PauseBackground.png");
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();

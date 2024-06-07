@@ -28,28 +28,28 @@ public class TexturaManager {
 
     private void cargarTexturas() {
         arribaTextures = new Array<>();
-        arribaTextures.add(new Texture("arriba.png"));
-        arribaTextures.add(new Texture("arriba1.png"));
-        arribaTextures.add(new Texture("arriba2.png"));
-        arribaTextures.add(new Texture("arriba3.png"));
+        arribaTextures.add(new Texture("Player/arriba.png"));
+        arribaTextures.add(new Texture("Player/arriba1.png"));
+        arribaTextures.add(new Texture("Player/arriba2.png"));
+        arribaTextures.add(new Texture("Player/arriba3.png"));
 
         abajoTextures = new Array<>();
-        abajoTextures.add(new Texture("abajo.png"));
-        abajoTextures.add(new Texture("abajo1.png"));
-        abajoTextures.add(new Texture("abajo2.png"));
-        abajoTextures.add(new Texture("abajo3.png"));
+        abajoTextures.add(new Texture("Player/abajo.png"));
+        abajoTextures.add(new Texture("Player/abajo1.png"));
+        abajoTextures.add(new Texture("Player/abajo2.png"));
+        abajoTextures.add(new Texture("Player/abajo3.png"));
 
         derechaTextures = new Array<>();
-        derechaTextures.add(new Texture("derecha.png"));
-        derechaTextures.add(new Texture("derecha1.png"));
-        derechaTextures.add(new Texture("derecha2.png"));
-        derechaTextures.add(new Texture("derecha3.png"));
+        derechaTextures.add(new Texture("Player/derecha.png"));
+        derechaTextures.add(new Texture("Player/derecha1.png"));
+        derechaTextures.add(new Texture("Player/derecha2.png"));
+        derechaTextures.add(new Texture("Player/derecha3.png"));
 
         izquierdaTextures = new Array<>();
-        izquierdaTextures.add(new Texture("izquierda.png"));
-        izquierdaTextures.add(new Texture("izquierda1.png"));
-        izquierdaTextures.add(new Texture("izquierda2.png"));
-        izquierdaTextures.add(new Texture("izquierda3.png"));
+        izquierdaTextures.add(new Texture("Player/izquierda.png"));
+        izquierdaTextures.add(new Texture("Player/izquierda1.png"));
+        izquierdaTextures.add(new Texture("Player/izquierda2.png"));
+        izquierdaTextures.add(new Texture("Player/izquierda3.png"));
 
     }
     

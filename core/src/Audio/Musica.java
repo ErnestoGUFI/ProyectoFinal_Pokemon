@@ -10,8 +10,8 @@ public class Musica {
     
     public Musica() {
     	
-    	 MenuMusic = Gdx.audio.newMusic(Gdx.files.internal("MusicaMenu.mp3"));
-    	 MapMusic = Gdx.audio.newMusic(Gdx.files.internal("MusicaMapa.mp3"));
+    	 MenuMusic = Gdx.audio.newMusic(Gdx.files.internal("Audio/MusicaMenu.mp3"));
+    	 MapMusic = Gdx.audio.newMusic(Gdx.files.internal("Audio/MusicaMapa.mp3"));
     }
     
     public void playMenuMusic() {
@@ -26,7 +26,8 @@ public class Musica {
     }
     
     public void playMapMusic() {
-        MapMusic.setLooping(true);
+    	MapMusic.setVolume(1);
+        MapMusic.setLooping(true);      
         MapMusic.play();
     }
     

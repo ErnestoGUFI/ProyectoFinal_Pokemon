@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.pokemon.game.MyPokemonGame;
-import com.pokemon.game.screens.FightScreen;
 import com.pokemon.game.screens.GameScreen;
 
 import Audio.Musica;
