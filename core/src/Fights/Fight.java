@@ -56,7 +56,6 @@ public class Fight {
 
     private String narracion;
     
-    // Enum para los estados de la batalla
     private enum Estado {
         MENU_OPCIONES,
         SELECCION_ATAQUE,
@@ -73,8 +72,7 @@ public class Fight {
     private float pauseTimer = 0f;
     private final float PAUSE_DURATION = 2f;
 
-    private int selectedAttackIndex = 0; // Variable para llevar el seguimiento del ataque seleccionado
-    
+    private int selectedAttackIndex = 0;
     private int contadorPociones=3;
     
     public Fight(MyPokemonGame game) {
@@ -117,64 +115,92 @@ public class Fight {
         viewportFight.apply();
     }
 
-    // Método para la selección de ataques del jugador
-    public boolean seleccionAtaque() {
+    //seleccionas que deseas hacer
+    public boolean seleccion() {
         if (estadoActual == Estado.MENU_OPCIONES) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-                sonido.playCambiarOpcion();
-                selectedOptionIndex = (selectedOptionIndex + 1) % 4;
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-                sonido.playCambiarOpcion();
-                selectedOptionIndex = (selectedOptionIndex - 1 + 4) % 4;
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                switch (selectedOptionIndex) {
-                    case 0:
-                        estadoActual = Estado.SELECCION_ATAQUE;
-                        sonido.playPressedSound();                        
-                        break;
-                    case 1:
-                        if (contadorPociones > 0) {
-                            sonido.playHealth();
-                            pokemonAmigo.vida += 25;
-                            if (pokemonAmigo.vida > 100) {
-                                pokemonAmigo.vida = 100; 
-                            }
-                            porcentajeJugador = (float) pokemonAmigo.vida / 100;
-                            contadorPociones--;
-                            narracion = pokemonAmigo.nombre + " se ha curado. " + contadorPociones + "/3";
-                            return true;
-                        } else {
-                            narracion = "Ya no tienes curaciones.";
-                            sonido.playError();
-                        }                        
-                    	break;
-                    case 2:
-                        narracion = pokemonAmigo.nombre + " cambia de Pokémon.";  
-                        break;
-                    case 3:                       
-                        narracion = "¡Has huido de la batalla!";
-                        pokemonEnemigo.vida=0;
-                        break;
-                }
-                return false;
-            }
+            return procesarMenuOpciones();
         } else if (estadoActual == Estado.SELECCION_ATAQUE) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-                selectedAttackIndex = (selectedAttackIndex + 1) % 4;
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-                selectedAttackIndex = (selectedAttackIndex - 1 + 4) % 4;
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                sonido.playAtaqueSonido();
-                estadoActual = Estado.EJECUTAR_ATAQUE;
-                String selectedAttackName = pokemonAmigo.atacks[selectedAttackIndex].nombre;
-                narracion = (pokemonAmigo.nombre + " ha usado " + selectedAttackName);
-                porcentajeEnemigo = (float)(pokemonAmigo.atacks[selectedAttackIndex].atacar(pokemonEnemigo));
-                estadoActual = Estado.MENU_OPCIONES;
-                return true;
-            }
+            return procesarSeleccionAtaque();
         }
         return false;
     }
+    
+    //detectar que opcion seleccionaste
+    private boolean procesarMenuOpciones() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            sonido.playCambiarOpcion();
+            selectedOptionIndex = (selectedOptionIndex + 1) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            sonido.playCambiarOpcion();
+            selectedOptionIndex = (selectedOptionIndex - 1 + 4) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            return ejecutarAccionMenu();
+        }
+        return false;
+    }
+
+    //ejecutar la opcion seleccionada
+    private boolean ejecutarAccionMenu() {
+        switch (selectedOptionIndex) {
+            case 0:
+                estadoActual = Estado.SELECCION_ATAQUE;
+                sonido.playPressedSound();                        
+                break;
+            case 1:
+                return usarPocion();
+            case 2:
+                narracion = pokemonAmigo.nombre + " cambia de Pokémon.";  
+                break;
+            case 3:                       
+                narracion = "¡Has huido de la batalla!";
+                pokemonEnemigo.vida=0;
+                break;
+        }
+        return false;
+    }
+
+    //curarte
+    private boolean usarPocion() {
+        if (contadorPociones > 0) {
+            sonido.playHealth();
+            pokemonAmigo.vida += 25;
+            if (pokemonAmigo.vida > 100) {
+                pokemonAmigo.vida = 100; 
+            }
+            porcentajeJugador = (float) pokemonAmigo.vida / 100;
+            contadorPociones--;
+            narracion = pokemonAmigo.nombre + " se ha curado. " + contadorPociones + "/3";
+            return true;
+        } else {
+            narracion = "Ya no tienes curaciones.";
+            sonido.playError();
+            return false;
+        }
+    }
+
+    //seleccionar ataque
+    private boolean procesarSeleccionAtaque() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            selectedAttackIndex = (selectedAttackIndex + 1) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            selectedAttackIndex = (selectedAttackIndex - 1 + 4) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            return ejecutarAtaque();
+        }
+        return false;
+    }
+
+    //usar ataque
+    private boolean ejecutarAtaque() {
+        sonido.playAtaqueSonido();
+        estadoActual = Estado.EJECUTAR_ATAQUE;
+        String selectedAttackName = pokemonAmigo.atacks[selectedAttackIndex].nombre;
+        narracion = (pokemonAmigo.nombre + " ha usado " + selectedAttackName);
+        porcentajeEnemigo = (float)(pokemonAmigo.atacks[selectedAttackIndex].atacar(pokemonEnemigo));
+        estadoActual = Estado.MENU_OPCIONES;
+        return true;
+    }
+
 
     // Método para la introducción de la batalla
     public void introBatalla() {

@@ -113,7 +113,7 @@ public class FightManager {
             if (tiempo.isRunning()) tiempo.stop();
             if (turno) {
                 peleaScreen.batallaScreen();
-                if (peleaScreen.seleccionAtaque()) {
+                if (peleaScreen.seleccion()) {
                     
                     turno = false;
                 }
