@@ -133,19 +133,20 @@ public class Fight {
                         sonido.playPressedSound();                        
                         break;
                     case 1:
-                    	
-                    	if(contadorPociones>0) {
-	                        sonido.playHealth();
-	                        pokemonAmigo.vida += 25; 
-	                        porcentajeJugador = (float) pokemonAmigo.vida / 100;
-	                        contadorPociones--;
-	                        narracion = pokemonAmigo.nombre + " se ha curado. " + contadorPociones +"/3";
-                        return true; 
-                    	}
-                    	else {
-                    		narracion = "Ya no tienes curaciones." ;
-                    		sonido.playError();
-                    	}
+                        if (contadorPociones > 0) {
+                            sonido.playHealth();
+                            pokemonAmigo.vida += 25;
+                            if (pokemonAmigo.vida > 100) {
+                                pokemonAmigo.vida = 100; 
+                            }
+                            porcentajeJugador = (float) pokemonAmigo.vida / 100;
+                            contadorPociones--;
+                            narracion = pokemonAmigo.nombre + " se ha curado. " + contadorPociones + "/3";
+                            return true;
+                        } else {
+                            narracion = "Ya no tienes curaciones.";
+                            sonido.playError();
+                        }                        
                     	break;
                     case 2:
                         narracion = pokemonAmigo.nombre + " cambia de Pokémon.";  
@@ -207,18 +208,12 @@ public class Fight {
         game.batch.end();
     }
     
-    // Método para renderizar las formas
- // Método para renderizar las formas
+  
     public void renderShapes() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        
-        // Dibuja el borde blanco seguido de un borde negro para el primer rectángulo redondeado
-        roundRect(sr, 48, 47, 1178, 150, 20, Color.WHITE);
-        roundRect(sr, 48, 47, 1178, 150, 20, Color.BLACK);
-
-        // Dibuja el borde blanco seguido de un borde negro para el segundo rectángulo redondeado
-        roundRect(sr, 90, 63, 520, 120, 20, Color.WHITE);
-        roundRect(sr, 90, 63, 520, 120, 20, Color.BLACK);
+        sr.setColor(new Color(205 / 255f, 205 / 255f, 205 / 255f, 0.8f));
+        sr.rect(48, 47, 1178, 150);
+        roundRect(sr, 90, 63, 520, 120, 20, new Color(175 / 255f, 175 / 255f, 175 / 255f, 0.8f));
 
         if (estadoActual == Estado.MENU_OPCIONES) {
             Color[] buttonColors = {Color.RED, Color.YELLOW, Color.GREEN, Color.ORANGE};
@@ -236,7 +231,7 @@ public class Fight {
         sr.rect(810, 210, 400, 100);
 
         sr.setColor(Color.GREEN);
-
+        
         sr.rect(905, 230, 280 * porcentajeJugador, 10);
         sr.rect(155, 585, 280 * porcentajeEnemigo, 10);
 
@@ -348,26 +343,14 @@ public class Fight {
         text1.dispose();
     }
 
-    // Método para dibujar un rectángulo redondeado
- // Método para dibujar un rectángulo redondeado con borde blanco seguido de borde negro
-    public void roundRect(ShapeRenderer renderer, float x, float y, float width, float height, float radius, Color borderColor) {
-        // Dibuja el borde blanco
-        renderer.setColor(Color.WHITE);
+    public void roundRect(ShapeRenderer renderer, float x, float y, float width, float height, float radius, Color color) {
+        renderer.setColor(color);
         renderer.rect(x + radius, y, width - 2 * radius, height);
         renderer.rect(x, y + radius, width, height - 2 * radius);
         renderer.circle(x + radius, y + radius, radius);
         renderer.circle(x + width - radius, y + radius, radius);
         renderer.circle(x + radius, y + height - radius, radius);
         renderer.circle(x + width - radius, y + height - radius, radius);
-        
-        // Dibuja el borde negro exterior al borde blanco
-        renderer.setColor(borderColor);
-        renderer.rect(x + radius - 1, y - 1, width - 2 * radius + 2, height + 2);
-        renderer.rect(x - 1, y + radius - 1, width + 2, height - 2 * radius + 2);
-        renderer.circle(x + radius - 1, y + radius - 1, radius);
-        renderer.circle(x + width - radius + 1, y + radius - 1, radius);
-        renderer.circle(x + radius - 1, y + height - radius + 1, radius);
-        renderer.circle(x + width - radius + 1, y + height - radius + 1, radius);
     }
 
 	

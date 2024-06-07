@@ -35,8 +35,7 @@ public class GameScreen implements Screen {
 
     public GameScreen(MyPokemonGame game) {
         this.game = game;
-        musicaMapa = new Musica();
-        musicaMapa.playMapMusic();
+        musicaMapa = new Musica();     
         fightManager = new FightManager(game);
     }
 
@@ -75,6 +74,8 @@ public class GameScreen implements Screen {
         if (!isPaused && !fightManager.isPelea()) {
             camera.position.set(jugador.x, jugador.y, 0);
             camera.update();
+            
+            musicaMapa.playMapMusic();
 
             mapas[mapaActualIndex].render();
 
