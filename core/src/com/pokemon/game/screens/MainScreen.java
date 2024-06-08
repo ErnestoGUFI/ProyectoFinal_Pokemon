@@ -97,7 +97,7 @@ public class MainScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         if (isButtonPressed) {
-            game.setScreen(new GameScreen(game, "Jugar default"));
+            game.setScreen(new GameScreen(game, "Jugador Default"));
             dispose();
             return;
         }
