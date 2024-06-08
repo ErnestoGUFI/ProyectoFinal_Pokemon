@@ -5,19 +5,22 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.pokemon.game.MyPokemonGame;
 
 import Audio.Musica;
 import Audio.Sonido;
+import DataBase.DataBase;
 import Tutorial.TutorialScreen;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+
+import java.util.List;
 
 public class MainScreen extends ScreenAdapter {
     private MyPokemonGame game;
@@ -38,25 +41,24 @@ public class MainScreen extends ScreenAdapter {
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         background = new Texture("Screen/BackgroundMenu.png");
-        
+
         musicaMenu = new Musica();
         musicaMenu.playMenuMusic();
         
         sonidoPresionado = new Sonido();
         cambiarOpcion = new Sonido();
 
-        // Cargar y configurar la fuente personalizada
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Pokemon_GB.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 40; // Tamaño de la fuente
+        parameter.size = 40;
         font = generator.generateFont(parameter);
-        parameter.size = 50; // Tamaño de la fuente seleccionada
+        parameter.size = 50;
         selectedFont = generator.generateFont(parameter);
-        parameter.size = 20; // Tamaño de la fuente de instrucción
+        parameter.size = 20;
         instructionFont = generator.generateFont(parameter);
-        generator.dispose(); // Liberar recursos del generador
+        generator.dispose();
 
-        selectedY = 200; // Inicia con "Jugar" seleccionado
+        selectedY = 200;
 
         startTime = TimeUtils.millis();
 
@@ -68,19 +70,22 @@ public class MainScreen extends ScreenAdapter {
                         isButtonPressed = true;
                         sonidoPresionado.playPressedSound();
                         musicaMenu.stopMenuMusic();
-                        game.setScreen(new TutorialScreen(game));  // Cambia a TutorialScreen
+                        game.setScreen(new TutorialScreen(game));
+                    } else if (selectedY == 150) {
+                        game.setScreen(new ScoreScreen(game));
+                        musicaMenu.stopMenuMusic();
                     } else if (selectedY == 100) {
                         Gdx.app.exit();
                     }
                     return true;
                 }
-                if ((keycode == Keys.S || keycode == Keys.DOWN) && selectedY == 200) {
-                    selectedY = 100;
+                if ((keycode == Keys.S || keycode == Keys.DOWN) && selectedY > 100) {
+                    selectedY -= 50;
                     cambiarOpcion.playCambiarOpcion();
                     return true;
                 }
-                if ((keycode == Keys.W || keycode == Keys.UP) && selectedY == 100) {
-                    selectedY = 200;
+                if ((keycode == Keys.W || keycode == Keys.UP) && selectedY < 200) {
+                    selectedY += 50;
                     cambiarOpcion.playCambiarOpcion();
                     return true;
                 }
@@ -92,7 +97,7 @@ public class MainScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         if (isButtonPressed) {
-            game.setScreen(new GameScreen(game,"PlayerName"));
+            game.setScreen(new GameScreen(game, "Jugar default"));
             dispose();
             return;
         }
@@ -104,28 +109,23 @@ public class MainScreen extends ScreenAdapter {
 
         game.batch.begin();
         game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        
-        // Dibuja el texto "Jugar" y "Salir"
+
         drawText("Jugar", 200, selectedY == 200);
+        drawText("Puntaje", 150, selectedY == 150);
         drawText("Salir", 100, selectedY == 100);
-        
-        // Calcula el tiempo transcurrido
+
         long elapsedTime = TimeUtils.timeSinceMillis(startTime);
-
-        // Cambia el tamaño del texto con una animación personalizada
         float scale = getCustomScale(elapsedTime);
-
-        // Dibuja las instrucciones parpadeando
-        drawInstructions("Usa W y S para desplazarte, ENTER para seleccionar", 550, scale);
+        drawInstructions("Usa W y S para desplazarte, ENTER para seleccionar", 50, scale);
 
         game.batch.end();
     }
 
     private float getCustomScale(long elapsedTime) {
-        float cycleTime = 2000; // Tiempo de un ciclo completo en milisegundos
+        float cycleTime = 2000;
         float halfCycle = cycleTime / 2;
         float time = elapsedTime % cycleTime;
-        
+
         if (time < halfCycle) {
             return Interpolation.sine.apply(0.95f, 1.05f, time / halfCycle);
         } else {
@@ -136,25 +136,13 @@ public class MainScreen extends ScreenAdapter {
     private void drawText(String text, float y, boolean isSelected) {
         BitmapFont currentFont = isSelected ? selectedFont : font;
         GlyphLayout layout = new GlyphLayout(currentFont, text);
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2;
-
-        // Dibuja el texto
-        currentFont.draw(game.batch, layout, x, y);
+        currentFont.draw(game.batch, layout, (Gdx.graphics.getWidth() - layout.width) / 2, y);
     }
 
     private void drawInstructions(String text, float y, float scale) {
         instructionFont.getData().setScale(scale);
         GlyphLayout layout = new GlyphLayout(instructionFont, text);
-        float x = (Gdx.graphics.getWidth() - layout.width * scale) / 2;
-
-        // Dibuja el texto de las instrucciones
-        instructionFont.draw(game.batch, layout, x, y);
-        instructionFont.getData().setScale(1); // Restaura la escala original
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        camera.setToOrtho(false, width, height);
+        instructionFont.draw(game.batch, layout, (Gdx.graphics.getWidth() - layout.width) / 2, y);
     }
 
     @Override
@@ -165,5 +153,6 @@ public class MainScreen extends ScreenAdapter {
         instructionFont.dispose();
         musicaMenu.dispose();
         sonidoPresionado.dispose();
+        cambiarOpcion.dispose();
     }
 }
