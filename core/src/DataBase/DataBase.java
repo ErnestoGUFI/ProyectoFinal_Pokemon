@@ -58,4 +58,43 @@ public class DataBase {
         }
         return false;
     }
+
+    public static int getPlayerId(String playerName) {
+        String sql = "SELECT ID_Jugador FROM Jugador WHERE Nombre = ?";
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, playerName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("ID_Jugador");
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Database error", e);
+        }
+        return -1;
+    }
+
+    public static void saveScore(String playerName, int score) {
+        int playerId = getPlayerId(playerName);
+        if (playerId != -1) {
+            // Establecer la conexión a la base de datos y ejecutar la consulta
+            String sql = "INSERT INTO Partida (ID_Jugador, Guardado, Score) VALUES (?, NOW(), ?)";
+            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                // Establecer los parámetros de la consulta
+                statement.setInt(1, playerId);
+                statement.setInt(2, score);
+
+                // Ejecutar la consulta para insertar el registro
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Database error", e);
+            }
+        } else {
+            LOGGER.log(Level.SEVERE, "Player ID not found for player: " + playerName);
+        }
+    }
 }

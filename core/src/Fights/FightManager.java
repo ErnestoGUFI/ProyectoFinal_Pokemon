@@ -11,12 +11,15 @@ import com.pokemon.game.MyPokemonGame;
 
 import Pokemons.Pokemon;
 import Audio.Sonido; // Asegúrate de importar la clase adecuada para los sonidos
+import DataBase.DataBase;
 
 public class FightManager {
     private MyPokemonGame game;
     private Fight peleaScreen;
     private Timer tiempo;
     private int seg = 0;
+    private String playerName;
+    private int score;
     private boolean pelea = false;
     private boolean turno = true;
     private boolean paused = false;
@@ -64,8 +67,9 @@ public class FightManager {
         arregloPokemon[13],
     };
 
-    public FightManager(MyPokemonGame game) {
+    public FightManager(MyPokemonGame game, String playerName) {
         this.game = game;
+        this.playerName = playerName;
         peleaScreen = new Fight(game);
         sonido = new Sonido(); // Inicializa la instancia de sonidos
 
@@ -76,6 +80,8 @@ public class FightManager {
                 System.out.println(seg);
             }
         });
+
+        score = 0;
     }
 
     public void startBattle() {
@@ -101,6 +107,7 @@ public class FightManager {
                 paused = false;
             }
             return;
+            
         }
         peleaScreen.cameraFight.update();
         game.batch.setProjectionMatrix(peleaScreen.cameraFight.combined);
@@ -124,7 +131,10 @@ public class FightManager {
         }
 
         if (peleaScreen.pokemonEnemigo.vida <= 0) {
+            score += 10;
+            DataBase.saveScore(playerName, score); // Actualizar el puntaje en la base de datos
             resetBattle();
+            System.out.println(score);
         }
     }
 

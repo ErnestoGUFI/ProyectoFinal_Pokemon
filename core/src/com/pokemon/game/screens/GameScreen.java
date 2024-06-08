@@ -30,13 +30,15 @@ public class GameScreen implements Screen {
     private Pausa pausaScreen;
     public Musica musicaMapa;
     private MyPokemonGame game;
-
+    private String playerName;
+    
     private FightManager fightManager;
-
-    public GameScreen(MyPokemonGame game) {
-        this.game = game;
-        musicaMapa = new Musica();     
-        fightManager = new FightManager(game);
+    
+    public GameScreen(MyPokemonGame game, String playerName) {
+    	 this.game = game;
+         this.playerName = playerName;
+         musicaMapa = new Musica();     
+         fightManager = new FightManager(game, playerName); // Pasar el nombre del jugador
     }
 
     @Override

@@ -92,7 +92,7 @@ public class MainScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         if (isButtonPressed) {
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new GameScreen(game,"PlayerName"));
             dispose();
             return;
         }
