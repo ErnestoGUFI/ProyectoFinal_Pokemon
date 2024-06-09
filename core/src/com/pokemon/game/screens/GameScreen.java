@@ -1,10 +1,5 @@
 package com.pokemon.game.screens;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -35,10 +30,11 @@ public class GameScreen implements Screen {
     private FightManager fightManager;
     
     public GameScreen(MyPokemonGame game, String playerName) {
-    	 this.game = game;
-         this.playerName = playerName;
-         musicaMapa = new Musica();     
-         fightManager = new FightManager(game, playerName); // Pasar el nombre del jugador
+        this.game = game;
+        this.playerName = playerName;
+        musicaMapa = new Musica();     
+        fightManager = new FightManager(game, playerName); // Pasar el nombre del jugador
+        pausaScreen = new Pausa(game, fightManager); // Pasar la instancia de FightManager a Pausa
     }
 
     @Override
@@ -57,7 +53,6 @@ public class GameScreen implements Screen {
         };
         mapaActualIndex = 0;
         isPaused = false;
-        pausaScreen = new Pausa(game);
 
         Gdx.input.setInputProcessor(controles);
     }
@@ -142,11 +137,13 @@ public class GameScreen implements Screen {
     public void cambiarMapa(int nuevoIndice, float nuevaPosX, float nuevaPosY) {
         if (nuevoIndice >= 0 && nuevoIndice < mapas.length) {
             mapaActualIndex = nuevoIndice;
-            jugador.setPosition(nuevaPosX, nuevaPosY);
+            jugador.x = nuevaPosX;
+            jugador.y = nuevaPosY;
         }
     }
 
-    public void stopMapMusic() {
-        musicaMapa.stopMapMusic();
-    }
+	public void stopMapMusic() {
+		// TODO Auto-generated method stub
+		musicaMapa.stopMapMusic();
+	}
 }

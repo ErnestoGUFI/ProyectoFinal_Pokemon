@@ -70,8 +70,6 @@ public class TutorialScreen extends ScreenAdapter {
                             // Guardar el nombre y avanzar a la pantalla del juego en la última imagen
                         	if (currentImageIndex == tutorialImages.size - 1) {
                         	    DataBase.saveUserName(playerName.toString());
-                        	    // Guardar el puntaje inicial (0) para el jugador
-                        	    DataBase.saveScore(playerName.toString(), 0);
                         	    game.setScreen(new GameScreen(game, playerName.toString())); // Pasar el nombre del jugador a la GameScreen
                         	    dispose();
                         	}

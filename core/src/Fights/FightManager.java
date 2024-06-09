@@ -10,8 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.pokemon.game.MyPokemonGame;
 
 import Pokemons.Pokemon;
-import Audio.Sonido; // Asegúrate de importar la clase adecuada para los sonidos
-import DataBase.DataBase;
+import Audio.Sonido;
 
 public class FightManager {
     private MyPokemonGame game;
@@ -132,7 +131,6 @@ public class FightManager {
 
         if (peleaScreen.pokemonEnemigo.vida <= 0) {
             score += 10;
-            DataBase.saveScore(playerName, score); // Actualizar el puntaje en la base de datos
             resetBattle();
             System.out.println(score);
         }
@@ -159,5 +157,13 @@ public class FightManager {
 
     private void playSonidoAtaque() {
         sonido.playAtaqueSonido();
+    }
+    
+    public int getScore() {
+        return score;
+    }
+    
+    public String getPlayerName() {
+        return playerName;
     }
 }

@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
+import DataBase.DataBase;
+import Fights.FightManager;
 
 public class Pausa {
     OrthographicCamera pauseCamera;
@@ -20,11 +22,12 @@ public class Pausa {
     private float selectedY;
     private MyPokemonGame game;
     private boolean isOptionSelected;
+    private FightManager fightManager;
 
-    public Pausa(MyPokemonGame game) {
+    public Pausa(MyPokemonGame game, FightManager fightManager) {
         this.game = game;
+        this.fightManager = fightManager; 
         
-        // Crear nueva cámara y viewport para la pantalla de pausa
         pauseCamera = new OrthographicCamera();
         setPauseViewport(new FitViewport(1280, 720, pauseCamera));
         pauseCamera.setToOrtho(false);
@@ -78,7 +81,6 @@ public class Pausa {
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER)) {
             if (selectedY == 200) {
                 isOptionSelected = true;
-                
             } else if (selectedY == 150) {
                 saveGame();
                 Gdx.app.exit();
@@ -95,7 +97,9 @@ public class Pausa {
     }
 
     private void saveGame() {
-        // Lógica para guardar el juego
+        int currentScore = fightManager.getScore();
+        String playerName = fightManager.getPlayerName();
+        DataBase.saveScore(playerName, currentScore);
     }
 
     public boolean isOptionSelected() {
