@@ -115,11 +115,9 @@ public class Jugador {
         	System.out.println("Pelea Encontrada");
         	game.stopMapMusic();
         	return true;
-            /*Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        	pokemonGame.setScreen(new FightScreen(pokemonGame));
-        	*/
+            
         }
-        
+       
         return false;
     }
     

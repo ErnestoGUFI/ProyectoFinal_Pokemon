@@ -132,8 +132,12 @@ public class Fight {
 
     //seleccionas que deseas hacer
     public boolean seleccion() {
-        if (estadoActual == Estado.MENU_OPCIONES) {
-            return procesarMenuOpciones();
+    	if(pokemonAmigo.vida<=0) {
+    		pokemonAmigo.vida=0;
+        	estadoActual=Estado.CAMBIAR_POKEMON;
+        	return procesarMenuCambio();
+    	}else if (estadoActual == Estado.MENU_OPCIONES) {
+            return procesarMenuOpciones(); 
         } else if (estadoActual == Estado.SELECCION_ATAQUE) {
             return procesarSeleccionAtaque();
         } else if(estadoActual == Estado.CAMBIAR_POKEMON) {
@@ -345,6 +349,8 @@ public class Fight {
   
     public void renderShapes() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
+
+        // Color de fondo de las áreas de texto y menú
         sr.setColor(new Color(205 / 255f, 205 / 255f, 205 / 255f, 0.8f));
         sr.rect(48, 47, 1178, 150);
         roundRect(sr, 90, 63, 520, 120, 20, new Color(175 / 255f, 175 / 255f, 175 / 255f, 0.8f));
@@ -359,25 +365,40 @@ public class Fight {
                 roundRect(sr, 695 + 270 * (i % 2), 130 - 72 * (i / 2), 210, 52, 10, Color.RED);
             }
         } else if(estadoActual == Estado.CAMBIAR_POKEMON) {
-        	for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 roundRect(sr, 695 + 270 * (i % 2), 130 - 72 * (i / 2), 210, 52, 10, Color.BLUE);
             }
         }
-        
 
+        // Fondo blanco para las barras de vida
         sr.setColor(new Color(240 / 255f, 240 / 255f, 240 / 255f, 1));
         sr.rect(60, 565, 400, 100);
         sr.rect(810, 210, 400, 100);
 
-        sr.setColor(Color.GREEN);
-        
+        // Determinar el color de la barra de vida del jugador
+        Color colorVidaJugador = determinarColorVida(porcentajeJugador);
+        sr.setColor(colorVidaJugador);
         sr.rect(905, 230, 280 * porcentajeJugador, 10);
+
+        // Determinar el color de la barra de vida del enemigo
+        Color colorVidaEnemigo = determinarColorVida(porcentajeEnemigo);
+        sr.setColor(colorVidaEnemigo);
         sr.rect(155, 585, 280 * porcentajeEnemigo, 10);
 
         sr.end();
     }
 
-
+    
+    private Color determinarColorVida(float porcentajeVida) {
+        if (porcentajeVida <= 0.3f) {
+            return Color.RED;
+        } else if (porcentajeVida <= 0.6f) {
+            return Color.ORANGE;
+        } else {
+            return Color.GREEN;
+        }
+    }
+  
     // Método para dibujar elementos
     public void dibujarElementos() {
         // Dibuja Pokémon
@@ -386,7 +407,7 @@ public class Fight {
 
         // Dibuja texto de narración
         text.setColor(new Color(0, 0, 0, 0.8f));
-        text.draw(game.batch, narracion, 120f, 135f);
+        text.draw(game.batch, narracion, 100f, 135f);
 
         // Guarda el color original para restablecerlo después
         Color originalColor = text1.getColor().cpy();
@@ -423,10 +444,10 @@ public class Fight {
                 }
                 text1.draw(game.batch, pokemonAmigo.atacks[i].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
             }
-        } else if(estadoActual == Estado.CAMBIAR_POKEMON) {
-        	int j = 0;
-        	int k = 0;
-        	for (int i = 0; i < 4; i++) {
+        } else if (estadoActual == Estado.CAMBIAR_POKEMON) {
+            int j = 0;
+            int k = 0;
+            for (int i = 0; i < 4; i++) {
                 float attackTextX = 720f;
                 float attackTextY = 160f - i * 70;
                 if (i >= 2) {
@@ -438,36 +459,45 @@ public class Fight {
                 } else {
                     text1.setColor(originalColor); // Restaura el color original
                 }
-                
-                if(listaPokemon[j].nombre.equals(pokemonAmigo.nombre)) {
-                	text1.draw(game.batch, listaPokemon[j + 1].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
-                	pokemonNames[k] = listaPokemon[j + 1].nombre;
-                	j+=2;
-                	k++;
+
+                if (listaPokemon[j].nombre.equals(pokemonAmigo.nombre)) {
+                    text1.draw(game.batch, listaPokemon[j + 1].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+                    pokemonNames[k] = listaPokemon[j + 1].nombre;
+                    j += 2;
+                    k++;
                 } else {
-                	text1.draw(game.batch, listaPokemon[j].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
-                	pokemonNames[k] = listaPokemon[j].nombre;
-                	j++;
-                	k++;
+                    text1.draw(game.batch, listaPokemon[j].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+                    pokemonNames[k] = listaPokemon[j].nombre;
+                    j++;
+                    k++;
                 }
-                
-               
             }
-        	
         }
 
-        // Restaura el color original
+        
         text1.setColor(originalColor);
 
-        // Dibuja nombres de Pokémon
+        
         text1.setColor(new Color(0, 0, 0, 0.8f));
         text1.draw(game.batch, pokemonEnemigo.nombre, 80, 650);
         text1.draw(game.batch, pokemonAmigo.nombre, 830, 295);
 
-        // Dibuja barras de salud
+        int vidaMaxima = 100;
+        
+        int vidaActualAmigo = pokemonAmigo.vida; 
+        String vidaTextoAmigo = vidaActualAmigo + "/" + vidaMaxima;
+        text1.draw(game.batch, vidaTextoAmigo, 1080f, 260f);
+        
+        int vidaActualEnemigo = pokemonEnemigo.vida; 
+        String vidaTextoEnemigo = vidaActualEnemigo + "/" + vidaMaxima;
+        text1.draw(game.batch, vidaTextoEnemigo, 330f, 615f);
+
+        // Yo
         text1.draw(game.batch, "Vida", 830f, 245f);
+        //enemigo
         text1.draw(game.batch, "Vida", 80f, 600f);
     }
+
 
     // Método para el turno del enemigo
     public void turnoEnemigo() {

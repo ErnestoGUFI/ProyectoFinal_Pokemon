@@ -6,10 +6,12 @@ import java.util.Random;
 
 import javax.swing.Timer;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.pokemon.game.MyPokemonGame;
 
 import Pokemons.Pokemon;
+import Audio.Musica;
 import Audio.Sonido;
 
 public class FightManager {
@@ -26,6 +28,7 @@ public class FightManager {
     private final float PAUSE_DURATION = 2f;
     private int pokemonRandom = -1;
     private Sonido sonido; // Instancia para manejar los sonidos
+    private Musica musica;
 
     private Pokemon[] arregloPokemon = {
     		new Pokemon("Bulbasaur",100,new Texture("Pokemons/bulbasaurSprite.png"),"Placaje",20,"Latigo cepa",15,"Arañazo",12,"Embestida",20),
@@ -70,6 +73,7 @@ public class FightManager {
         this.playerName = playerName;
         peleaScreen = new Fight(game, listaPokemon);
         sonido = new Sonido(); // Inicializa la instancia de sonidos
+        musica = new Musica();
 
         tiempo = new Timer(1000, new ActionListener() {
             @Override
@@ -92,6 +96,7 @@ public class FightManager {
     }
 
     public void renderBattle(float delta) {
+    	musica.playBattleMusic();
         peleaScreen.cameraFight.update();
         game.batch.setProjectionMatrix(peleaScreen.cameraFight.combined);
 
@@ -132,9 +137,11 @@ public class FightManager {
             resetBattle();
             System.out.println(score);
         }
+        
     }
 
     public void resetBattle() {
+    	musica.stopBattleMusic();
         pelea = false;
         seg = 0;
         arregloPokemon[pokemonRandom].vida = 100;

@@ -7,11 +7,13 @@ public class Musica {
 	
 	private Music MenuMusic;
 	private Music MapMusic;
+	private Music battleMusic;
     
     public Musica() {
     	
     	 MenuMusic = Gdx.audio.newMusic(Gdx.files.internal("Audio/MusicaMenu.mp3"));
     	 MapMusic = Gdx.audio.newMusic(Gdx.files.internal("Audio/MusicaMapa.mp3"));
+    	 battleMusic = Gdx.audio.newMusic(Gdx.files.internal("Audio/battle.mp3"));
     }
     
     public void playMenuMusic() {
@@ -26,11 +28,11 @@ public class Musica {
     }
     
     public void playMapMusic() {
-    	MapMusic.setVolume(1);
+    	MapMusic.setVolume(0.1f);
         MapMusic.setLooping(true);      
         MapMusic.play();
     }
-    
+      
     public void stopMapMusic() {
     	if(MapMusic.isPlaying() && MapMusic != null) {
     		MapMusic.stop();
@@ -40,6 +42,18 @@ public class Musica {
     public void pauseMapMusic() {
     	if(MapMusic.isPlaying() && MapMusic != null) {
     		MapMusic.pause();
+    	}
+    }
+    
+    public void playBattleMusic() {
+    	battleMusic.setVolume(1);
+    	battleMusic.setLooping(true);      
+    	battleMusic.play();
+    }
+    
+    public void stopBattleMusic() {
+    	if(battleMusic.isPlaying() && battleMusic != null) {
+    		battleMusic.stop();
     	}
     }
     

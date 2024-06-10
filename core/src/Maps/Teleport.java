@@ -33,6 +33,8 @@ public class Teleport {
     public static boolean TeleportArbusto(TiledMap tiledMap, float[] vertices) {
         return checkTeleport(tiledMap, vertices, "Arbusto");
     }
+    
+   
 
     private static boolean checkTeleport(TiledMap tiledMap, float[] vertices, String targetName) {
         Polygon jugadorPolygon = new Polygon(vertices);
@@ -48,10 +50,7 @@ public class Teleport {
                 }
             }
         }
-
-   
-            
-        
+  
 
         return false;
     }

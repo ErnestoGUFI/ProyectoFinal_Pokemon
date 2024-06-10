@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
@@ -11,6 +12,7 @@ import com.pokemon.game.MyPokemonGame;
 import Audio.Musica;
 import Fights.FightManager;
 import Maps.Mapa;
+import Npc.NPC;
 import Player.Controles;
 import Player.Jugador;
 
@@ -26,6 +28,8 @@ public class GameScreen implements Screen {
     public Musica musicaMapa;
     private MyPokemonGame game;
     private String playerName;
+    
+    private NPC npc;
     
     private FightManager fightManager;
     
@@ -45,6 +49,9 @@ public class GameScreen implements Screen {
 
         jugador = new Jugador(game);
         controles = new Controles();
+        
+        Texture npcTexture = new Texture(Gdx.files.internal("NPC/bella mini 1.png"));
+        npc = new NPC(npcTexture, 500, 200);
 
         mapas = new Mapa[] {
             new Mapa("Maps/mapa.tmx", camera),
@@ -71,7 +78,7 @@ public class GameScreen implements Screen {
         if (!isPaused && !fightManager.isPelea()) {
             camera.position.set(jugador.x, jugador.y, 0);
             camera.update();
-            
+
             musicaMapa.playMapMusic();
 
             mapas[mapaActualIndex].render();
@@ -81,11 +88,17 @@ public class GameScreen implements Screen {
             game.batch.setProjectionMatrix(camera.combined);
             game.batch.begin();
             jugador.dibujar(game.batch, controles);
+            
+            // Dibujar el NPC solo si estamos en el mapa 0
+            if (mapaActualIndex == 0) {
+                npc.dibujar(game.batch);
+            }
+            
             game.batch.end();
         } else {
             if (fightManager.isPelea()) {
-            	fightManager.startBattle();
-            	fightManager.renderBattle(delta);
+                fightManager.startBattle();
+                fightManager.renderBattle(delta);
             } else {
                 pausaScreen.handleInput();
 
@@ -100,6 +113,7 @@ public class GameScreen implements Screen {
             }
         }
     }
+
 
     @Override
     public void resize(int width, int height) {
