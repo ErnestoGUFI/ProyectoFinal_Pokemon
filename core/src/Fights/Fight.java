@@ -20,12 +20,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
 
 import Audio.Sonido;
+import Audio.SonidoPokemon;
 import Pokemons.Pokemon;
 
 public class Fight {
 	
 	private MyPokemonGame game;
 	private Sonido sonido; 
+	private SonidoPokemon sonidoPokemon; 
 
     // Texturas para la escena inicial y de batalla
     private Texture entrenadorSprite, fondoInicioBatalla, pokemonEnemigoSprite, vsSprite;
@@ -77,13 +79,19 @@ public class Fight {
     private int contadorPociones=3;
     private int selectedChangeOption = 0;
     
+    private int pokemonInicialIndex=0;
+    
     private String pokemonNames[] = {null,null,null,null};
     
     private Pokemon listaPokemon[] = {null,null,null,null,null,};
     
     public Fight(MyPokemonGame game, Pokemon[] listaPokemon) {
         this.game = game;
+        
+        //sonidos
         sonido = new Sonido(); 
+        sonidoPokemon = new SonidoPokemon();
+        
         this.listaPokemon = listaPokemon;
         
         cameraFight = new OrthographicCamera();
@@ -111,7 +119,7 @@ public class Fight {
         tiempo.start();
         
         // Inicialización de pokémon
-        pokemonAmigo = new Pokemon("Bulbasaur", 100, pokemonAmigoSprite, "Placaje", 15, "Latigo Cepa", 15, "Somnifero", 20, "Intimidacion", 21);
+        pokemonAmigo = listaPokemon[0];
         pokemonEnemigo = new Pokemon("Squirtle", 100, pokemonEnemigoSprite, "Placaje", 15, "Chorro de agua", 15, "Escudo", 20, "Intimidacion", 21);
         
         narracion = "¿Qué va a hacer " + pokemonAmigo.nombre + "?";
@@ -150,39 +158,76 @@ public class Fight {
     }
     
     private boolean ejecutarAccionCambio() {
+        Pokemon nuevoPokemonAmigo = null;
+        
         switch (selectedChangeOption) {
             case 0:
                 sonido.playPressedSound();
-                for(Pokemon poke : listaPokemon) {
-                	if(poke.nombre.equals(pokemonNames[0])) pokemonAmigo = poke;
+                for (Pokemon poke : listaPokemon) {
+                    if (poke.nombre.equals(pokemonNames[0])) {
+                        nuevoPokemonAmigo = poke;
+                        
+                        break;
+                    }
                 }
-                estadoActual = Estado.MENU_OPCIONES;
                 break;
             case 1:
                 sonido.playPressedSound();
-                for(Pokemon poke : listaPokemon) {
-                	if(poke.nombre.equals(pokemonNames[1])) pokemonAmigo = poke;
+                for (Pokemon poke : listaPokemon) {
+                    if (poke.nombre.equals(pokemonNames[1])) {
+                        nuevoPokemonAmigo = poke;
+                        break;
+                    }
                 }
-            	estadoActual = Estado.MENU_OPCIONES;
-            	break;
+                break;
             case 2:
                 sonido.playPressedSound();
-                for(Pokemon poke : listaPokemon) {
-                	if(poke.nombre.equals(pokemonNames[2])) pokemonAmigo = poke;
+                for (Pokemon poke : listaPokemon) {
+                    if (poke.nombre.equals(pokemonNames[2])) {
+                        nuevoPokemonAmigo = poke;
+                        break;
+                    }
                 }
-            	estadoActual = Estado.MENU_OPCIONES;
                 break;
-            case 3:    
+            case 3:
                 sonido.playPressedSound();
-                for(Pokemon poke : listaPokemon) {
-                	if(poke.nombre.equals(pokemonNames[3])) pokemonAmigo = poke;
+                for (Pokemon poke : listaPokemon) {
+                    if (poke.nombre.equals(pokemonNames[3])) {
+                        nuevoPokemonAmigo = poke;
+                        break;
+                    }
                 }
-            	estadoActual = Estado.MENU_OPCIONES;
                 break;
         }
-        porcentajeJugador = (float) ((pokemonAmigo.vida)/(100));
+
+        if (nuevoPokemonAmigo != null) {
+            pokemonAmigo = nuevoPokemonAmigo;
+            sonidoPokemon(pokemonAmigo.nombre);
+            porcentajeJugador = (float) pokemonAmigo.vida / 100; 
+        }
+
+        estadoActual = Estado.MENU_OPCIONES;
         return false;
     }
+    
+    private void sonidoPokemon(String nombrePokemon) {
+    	if (nombrePokemon.equals("Pikachu")){
+    		sonidoPokemon.playPikachu();
+    	}
+    	if (nombrePokemon.equals("Bulbasaur")){
+    		sonidoPokemon.playBulbasur();
+    	}
+    	if (nombrePokemon.equals("Charizard")){
+    		sonidoPokemon.playCharizard();
+    	}
+    	if (nombrePokemon.equals("Pidgeot")){
+    		sonidoPokemon.playPidgeot();
+    	}
+    	if (nombrePokemon.equals("Squirtle")){
+    		sonidoPokemon.playSquirtle();
+    	}
+    }
+
     
     //detectar que opcion seleccionaste
     private boolean procesarMenuOpciones() {
@@ -241,8 +286,10 @@ public class Fight {
     //seleccionar ataque
     private boolean procesarSeleccionAtaque() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+        	sonido.playCambiarOpcion();
             selectedAttackIndex = (selectedAttackIndex + 1) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+        	sonido.playCambiarOpcion();
             selectedAttackIndex = (selectedAttackIndex - 1 + 4) % 4;
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             return ejecutarAtaque();

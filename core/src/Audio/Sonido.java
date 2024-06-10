@@ -13,6 +13,7 @@ public class Sonido {
     private Sound curar;
     private Sound error;
     
+    
     public Sonido() {
   
     	 pressed = Gdx.audio.newSound(Gdx.files.internal("Audio/Presionado.mp3"));
@@ -21,6 +22,7 @@ public class Sonido {
     	 ataque = Gdx.audio.newSound(Gdx.files.internal("Audio/explosion.mp3"));
     	 curar = Gdx.audio.newSound(Gdx.files.internal("Audio/health.mp3"));
     	 error = Gdx.audio.newSound(Gdx.files.internal("Audio/error.mp3"));
+    	 
     }
     
     public void playPressedSound() {
@@ -52,6 +54,10 @@ public class Sonido {
     public void playError() {
     	error.play(2);
     }
+    
+    
+    
+    
     
     
     
