@@ -60,7 +60,8 @@ public class Fight {
         MENU_OPCIONES,
         SELECCION_ATAQUE,
         EJECUTAR_ATAQUE,
-        ESPERAR
+        ESPERAR,
+        CAMBIAR_POKEMON
     }
 
     private Estado estadoActual = Estado.MENU_OPCIONES;
@@ -74,10 +75,16 @@ public class Fight {
 
     private int selectedAttackIndex = 0;
     private int contadorPociones=3;
+    private int selectedChangeOption = 0;
     
-    public Fight(MyPokemonGame game) {
+    private String pokemonNames[] = {null,null,null,null};
+    
+    private Pokemon listaPokemon[] = {null,null,null,null,null,};
+    
+    public Fight(MyPokemonGame game, Pokemon[] listaPokemon) {
         this.game = game;
         sonido = new Sonido(); 
+        this.listaPokemon = listaPokemon;
         
         cameraFight = new OrthographicCamera();
         viewportFight = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), cameraFight);
@@ -121,7 +128,59 @@ public class Fight {
             return procesarMenuOpciones();
         } else if (estadoActual == Estado.SELECCION_ATAQUE) {
             return procesarSeleccionAtaque();
+        } else if(estadoActual == Estado.CAMBIAR_POKEMON) {
+        	return procesarMenuCambio();
         }
+        	
+        return false;
+    }
+    
+    //detectar que opcion seleccionaste
+    private boolean procesarMenuCambio() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            sonido.playCambiarOpcion();
+            selectedChangeOption = (selectedChangeOption + 1) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            sonido.playCambiarOpcion();
+            selectedChangeOption = (selectedChangeOption - 1 + 4) % 4;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            return ejecutarAccionCambio();
+        }
+        return false;
+    }
+    
+    private boolean ejecutarAccionCambio() {
+        switch (selectedChangeOption) {
+            case 0:
+                sonido.playPressedSound();
+                for(Pokemon poke : listaPokemon) {
+                	if(poke.nombre.equals(pokemonNames[0])) pokemonAmigo = poke;
+                }
+                estadoActual = Estado.MENU_OPCIONES;
+                break;
+            case 1:
+                sonido.playPressedSound();
+                for(Pokemon poke : listaPokemon) {
+                	if(poke.nombre.equals(pokemonNames[1])) pokemonAmigo = poke;
+                }
+            	estadoActual = Estado.MENU_OPCIONES;
+            	break;
+            case 2:
+                sonido.playPressedSound();
+                for(Pokemon poke : listaPokemon) {
+                	if(poke.nombre.equals(pokemonNames[2])) pokemonAmigo = poke;
+                }
+            	estadoActual = Estado.MENU_OPCIONES;
+                break;
+            case 3:    
+                sonido.playPressedSound();
+                for(Pokemon poke : listaPokemon) {
+                	if(poke.nombre.equals(pokemonNames[3])) pokemonAmigo = poke;
+                }
+            	estadoActual = Estado.MENU_OPCIONES;
+                break;
+        }
+        porcentajeJugador = (float) ((pokemonAmigo.vida)/(100));
         return false;
     }
     
@@ -149,6 +208,7 @@ public class Fight {
             case 1:
                 return usarPocion();
             case 2:
+            	estadoActual = Estado.CAMBIAR_POKEMON;
                 narracion = pokemonAmigo.nombre + " cambia de Pokémon.";  
                 break;
             case 3:                       
@@ -251,7 +311,12 @@ public class Fight {
             for (int i = 0; i < 4; i++) {
                 roundRect(sr, 695 + 270 * (i % 2), 130 - 72 * (i / 2), 210, 52, 10, Color.RED);
             }
+        } else if(estadoActual == Estado.CAMBIAR_POKEMON) {
+        	for (int i = 0; i < 4; i++) {
+                roundRect(sr, 695 + 270 * (i % 2), 130 - 72 * (i / 2), 210, 52, 10, Color.BLUE);
+            }
         }
+        
 
         sr.setColor(new Color(240 / 255f, 240 / 255f, 240 / 255f, 1));
         sr.rect(60, 565, 400, 100);
@@ -311,6 +376,37 @@ public class Fight {
                 }
                 text1.draw(game.batch, pokemonAmigo.atacks[i].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
             }
+        } else if(estadoActual == Estado.CAMBIAR_POKEMON) {
+        	int j = 0;
+        	int k = 0;
+        	for (int i = 0; i < 4; i++) {
+                float attackTextX = 720f;
+                float attackTextY = 160f - i * 70;
+                if (i >= 2) {
+                    attackTextX = 980f;
+                    attackTextY = 160f - (i - 2) * 70;
+                }
+                if (i == selectedChangeOption) {
+                    text1.setColor(Color.YELLOW); // Cambia el color del texto del pokemon seleccionado.
+                } else {
+                    text1.setColor(originalColor); // Restaura el color original
+                }
+                
+                if(listaPokemon[j].nombre.equals(pokemonAmigo.nombre)) {
+                	text1.draw(game.batch, listaPokemon[j + 1].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+                	pokemonNames[k] = listaPokemon[j + 1].nombre;
+                	j+=2;
+                	k++;
+                } else {
+                	text1.draw(game.batch, listaPokemon[j].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+                	pokemonNames[k] = listaPokemon[j].nombre;
+                	j++;
+                	k++;
+                }
+                
+               
+            }
+        	
         }
 
         // Restaura el color original

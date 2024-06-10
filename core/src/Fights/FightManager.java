@@ -63,13 +63,12 @@ public class FightManager {
         arregloPokemon[6],
         arregloPokemon[9],
         arregloPokemon[12],
-        arregloPokemon[13],
     };
 
     public FightManager(MyPokemonGame game, String playerName) {
         this.game = game;
         this.playerName = playerName;
-        peleaScreen = new Fight(game);
+        peleaScreen = new Fight(game, listaPokemon);
         sonido = new Sonido(); // Inicializa la instancia de sonidos
 
         tiempo = new Timer(1000, new ActionListener() {
@@ -113,7 +112,6 @@ public class FightManager {
         peleaScreen.sr.setProjectionMatrix(peleaScreen.cameraFight.combined);
 
         if (seg < 5) {
-            System.out.println("seg<5");
             peleaScreen.introBatalla();
         } else if (seg >= 5) {
             if (tiempo.isRunning()) tiempo.stop();
