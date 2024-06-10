@@ -68,7 +68,7 @@ public class Fight {
 
     private Estado estadoActual = Estado.MENU_OPCIONES;
 
-    private String[] opcionesMenu = {"Atacar", "Curar", "Cambiar Pokémon", "Huir"};
+    private String[] opcionesMenu = {"Atacar", "Curar", "Pokemones", "Huir"};
     private int selectedOptionIndex = 0;
     
     private boolean paused = false;
@@ -356,7 +356,7 @@ public class Fight {
         roundRect(sr, 90, 63, 520, 120, 20, new Color(175 / 255f, 175 / 255f, 175 / 255f, 0.8f));
 
         if (estadoActual == Estado.MENU_OPCIONES) {
-            Color[] buttonColors = {Color.RED, Color.YELLOW, Color.GREEN, Color.ORANGE};
+            Color[] buttonColors = {Color.RED, Color.CYAN, Color.GREEN, Color.ORANGE};
             for (int i = 0; i < 4; i++) {
                 roundRect(sr, 695 + 270 * (i % 2), 130 - 72 * (i / 2), 210, 52, 10, buttonColors[i]);
             }
@@ -422,7 +422,7 @@ public class Fight {
                     optionTextY = 160f - (i - 2) * 70;
                 }
                 if (i == selectedOptionIndex) {
-                    text1.setColor(Color.YELLOW); // Cambia el color del texto de la opción seleccionada
+                    text1.setColor(Color.WHITE); // Cambia el color del texto de la opción seleccionada
                 } else {
                     text1.setColor(originalColor); // Restaura el color original
                 }
@@ -455,7 +455,7 @@ public class Fight {
                     attackTextY = 160f - (i - 2) * 70;
                 }
                 if (i == selectedChangeOption) {
-                    text1.setColor(Color.YELLOW); // Cambia el color del texto del pokemon seleccionado.
+                    text1.setColor(Color.WHITE); // Cambia el color del texto del pokemon seleccionado.
                 } else {
                     text1.setColor(originalColor); // Restaura el color original
                 }

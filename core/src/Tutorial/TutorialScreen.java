@@ -38,7 +38,6 @@ public class TutorialScreen extends ScreenAdapter {
         tutorialImages.add(new Texture("Screen/image1.png"));
         tutorialImages.add(new Texture("Screen/image2.png"));
         tutorialImages.add(new Texture("Screen/image3.png"));
-        tutorialImages.add(new Texture("Screen/image4.png"));
         tutorialImages.add(new Texture("Screen/image5.png"));
         tutorialImages.add(new Texture("Screen/image6.png"));
 

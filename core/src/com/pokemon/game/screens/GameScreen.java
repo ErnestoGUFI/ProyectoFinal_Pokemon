@@ -34,7 +34,7 @@ public class GameScreen implements Screen {
         this.playerName = playerName;
         musicaMapa = new Musica();     
         fightManager = new FightManager(game, playerName); // Pasar el nombre del jugador
-        pausaScreen = new Pausa(game, fightManager); // Pasar la instancia de FightManager a Pausa
+        pausaScreen = new Pausa(game, fightManager, musicaMapa); // Pasar la instancia de FightManager y Musica a Pausa
     }
 
     @Override
@@ -55,6 +55,9 @@ public class GameScreen implements Screen {
         isPaused = false;
 
         Gdx.input.setInputProcessor(controles);
+
+        // Iniciar la música del mapa al comenzar
+        musicaMapa.playMapMusic();
     }
 
     @Override
@@ -71,8 +74,6 @@ public class GameScreen implements Screen {
         if (!isPaused && !fightManager.isPelea()) {
             camera.position.set(jugador.x, jugador.y, 0);
             camera.update();
-            
-            musicaMapa.playMapMusic();
 
             mapas[mapaActualIndex].render();
 
@@ -84,8 +85,8 @@ public class GameScreen implements Screen {
             game.batch.end();
         } else {
             if (fightManager.isPelea()) {
-            	fightManager.startBattle();
-            	fightManager.renderBattle(delta);
+                fightManager.startBattle();
+                fightManager.renderBattle(delta);
             } else {
                 pausaScreen.handleInput();
 
@@ -111,12 +112,16 @@ public class GameScreen implements Screen {
     @Override
     public void pause() {
         isPaused = true;
+        musicaMapa.pauseMapMusic(); // Pausar la música cuando el juego está en pausa
     }
 
     @Override
     public void resume() {
         isPaused = false;
         pausaScreen.resetOptionSelected();
+        if (!pausaScreen.isMuted()) {
+            musicaMapa.playMapMusic(); // Reanudar la música cuando el juego se reanuda, solo si no está silenciada
+        }
     }
 
     @Override
@@ -131,6 +136,7 @@ public class GameScreen implements Screen {
         musicaMapa.dispose();
         for (Mapa mapa : mapas) {
             mapa.dispose();
+       
         }
     }
 
@@ -142,8 +148,7 @@ public class GameScreen implements Screen {
         }
     }
 
-	public void stopMapMusic() {
-		// TODO Auto-generated method stub
-		musicaMapa.stopMapMusic();
-	}
+    public void stopMapMusic() {
+        musicaMapa.stopMapMusic();
+    }
 }

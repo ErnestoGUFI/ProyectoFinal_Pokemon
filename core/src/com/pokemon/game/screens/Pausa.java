@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.game.MyPokemonGame;
+import Audio.Musica;
 import DataBase.DataBase;
 import Fights.FightManager;
 
@@ -23,11 +24,15 @@ public class Pausa {
     private MyPokemonGame game;
     private boolean isOptionSelected;
     private FightManager fightManager;
+    private Musica musica;
+    private boolean isMuted;
 
-    public Pausa(MyPokemonGame game, FightManager fightManager) {
+    public Pausa(MyPokemonGame game, FightManager fightManager, Musica musica) {
         this.game = game;
-        this.fightManager = fightManager; 
-        
+        this.fightManager = fightManager;
+        this.musica = musica;
+        this.isMuted = false;
+
         pauseCamera = new OrthographicCamera();
         setPauseViewport(new FitViewport(1280, 720, pauseCamera));
         pauseCamera.setToOrtho(false);
@@ -57,7 +62,8 @@ public class Pausa {
         }
         drawText(batch, "Regresar", 200, selectedY == 200);
         drawText(batch, "Guardar y salir", 150, selectedY == 150);
-        drawText(batch, "Salir", 100, selectedY == 100);
+        drawText(batch, "Silenciar musica", 100, selectedY == 100);
+        drawText(batch, "Salir", 50, selectedY == 50);
     }
 
     private void drawText(SpriteBatch batch, String text, float y, boolean isSelected) {
@@ -85,14 +91,25 @@ public class Pausa {
                 saveGame();
                 Gdx.app.exit();
             } else if (selectedY == 100) {
+            	 toggleMute();
+            } else if (selectedY == 50) {
                 Gdx.app.exit();
             }
         }
-        if ((Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.S) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) && selectedY > 100) {
+        if ((Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.S) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) && selectedY > 50) {
             selectedY -= 50;
         }
         if ((Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.W) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) && selectedY < 200) {
             selectedY += 50;
+        }
+    }
+
+    private void toggleMute() {
+        isMuted = !isMuted;
+        if (isMuted) {
+            musica.stopMapMusic();
+        } else {
+            musica.playMapMusic();
         }
     }
 
@@ -106,15 +123,19 @@ public class Pausa {
         return isOptionSelected;
     }
 
-	public Viewport getPauseViewport() {
-		return pauseViewport;
-	}
+    public Viewport getPauseViewport() {
+        return pauseViewport;
+    }
 
-	public void setPauseViewport(Viewport pauseViewport) {
-		this.pauseViewport = pauseViewport;
-	}
-	
-	public void resetOptionSelected() {
-	    isOptionSelected = false;
-	}
+    public void setPauseViewport(Viewport pauseViewport) {
+        this.pauseViewport = pauseViewport;
+    }
+
+    public void resetOptionSelected() {
+        isOptionSelected = false;
+    }
+
+    public boolean isMuted() {
+        return isMuted;
+    }
 }

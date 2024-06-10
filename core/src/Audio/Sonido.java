@@ -27,7 +27,7 @@ public class Sonido {
     
     public void playPressedSound() {
     	
-    	pressed.play(2);
+    	pressed.play(1);
     }
     
     public void playCambiarOpcion() {
@@ -54,13 +54,7 @@ public class Sonido {
     public void playError() {
     	error.play(2);
     }
-    
-    
-    
-    
-    
-    
-    
+
     public void dispose() {
         // Libera los recursos de música y sonido
         pressed.dispose();

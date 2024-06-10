@@ -24,29 +24,25 @@ public class SonidoPokemon {
     }
      
     public void playPikachu() {
-    	pikachu.play(2);
+    	pikachu.play(1);
     }
     
     public void playCharizard() {
-    	charizard.play(2);
+    	charizard.play(0.1f);
     }
     
     public void playBulbasur() {
-    	bulbasur.play(2);
+    	bulbasur.play(1);
     }
     
     public void playSquirtle() {
-    	squirtle.play(2);
+    	squirtle.play(1);
     }
     
     public void playPidgeot() {
-    	pidgeot.play(2);
+    	pidgeot.play(0.1f);
     }
-    
-    
-    
-    
-    
+
     public void dispose() {
         // Libera los recursos de música y sonido
         pikachu.dispose();

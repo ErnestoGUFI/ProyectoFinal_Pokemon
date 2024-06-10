@@ -17,6 +17,7 @@ public class Musica {
     }
     
     public void playMenuMusic() {
+    	MenuMusic.setVolume(0.1f);
         MenuMusic.setLooping(true);
         MenuMusic.play();
     }
@@ -46,7 +47,7 @@ public class Musica {
     }
     
     public void playBattleMusic() {
-    	battleMusic.setVolume(1);
+    	battleMusic.setVolume(0.1f);
     	battleMusic.setLooping(true);      
     	battleMusic.play();
     }
@@ -61,5 +62,6 @@ public class Musica {
         // Libera los recursos de música y sonido
         MenuMusic.dispose();
         MapMusic.dispose();
+        battleMusic.dispose();
     }
 }
