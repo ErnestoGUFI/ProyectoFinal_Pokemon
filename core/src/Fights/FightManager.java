@@ -6,6 +6,8 @@ import java.util.Random;
 
 import javax.swing.Timer;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.pokemon.game.MyPokemonGame;
@@ -13,6 +15,7 @@ import com.pokemon.game.MyPokemonGame;
 import Pokemons.Pokemon;
 import Audio.Musica;
 import Audio.Sonido;
+import Fights.Fight.Estado;
 
 public class FightManager {
     private MyPokemonGame game;
@@ -82,7 +85,7 @@ public class FightManager {
                 System.out.println(seg);
             }
         });
-
+        
         score = 0;
     }
 
@@ -104,8 +107,10 @@ public class FightManager {
             peleaScreen.batallaScreen();
             pauseTimer += delta;
             if (pauseTimer >= PAUSE_DURATION) {
-                playSonidoAtaque(); // Reproducir sonido de ataque enemigo
-                peleaScreen.turnoEnemigo();
+                if(peleaScreen.pokemonEnemigo.vida >0) {
+                    playSonidoAtaque(); 
+                	peleaScreen.turnoEnemigo();
+                }
                 pauseTimer = 0f;
                 paused = false;
             }
@@ -133,14 +138,35 @@ public class FightManager {
         }
 
         if (peleaScreen.pokemonEnemigo.vida <= 0) {
-            score += 10;
-            resetBattle();
-            System.out.println(score);
+            peleaScreen.narracion = "Ganaste, presiona E para continuar";
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            	score += 10;
+            	resetBattle();
+            }
         }
         
+    	if(peleaScreen.pokemonAmigo.vida<=0) {
+    		if(peleaScreen.huir) {
+    			resetBattle();
+    			peleaScreen.huir = false;
+    		} else {
+    			peleaScreen.narracion = "Perdiste, presiona E para salir \no elige otro pokemon con ENTER";
+                if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                	resetBattle();
+                } else if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                	peleaScreen.estadoActual = Estado.CAMBIAR_POKEMON;
+                }
+    		}
+    		
+    	}
     }
 
     public void resetBattle() {
+    	for(Pokemon poke : listaPokemon) {
+        	poke.vida = 100;
+        }
+    	peleaScreen.narracion ="¿Qué va a hacer " + peleaScreen.pokemonAmigo.nombre + "?";
+    	peleaScreen.estadoActual = Estado.MENU_OPCIONES;
     	musica.stopBattleMusic();
         pelea = false;
         seg = 0;

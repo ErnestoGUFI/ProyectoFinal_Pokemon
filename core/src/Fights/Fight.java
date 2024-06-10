@@ -53,12 +53,12 @@ public class Fight {
     public OrthographicCamera cameraFight;
     private Viewport viewportFight;
 
-    private Pokemon pokemonAmigo;
+    Pokemon pokemonAmigo;
     Pokemon pokemonEnemigo;
 
-    private String narracion;
+    String narracion;
     
-    private enum Estado {
+    enum Estado {
         MENU_OPCIONES,
         SELECCION_ATAQUE,
         EJECUTAR_ATAQUE,
@@ -66,7 +66,7 @@ public class Fight {
         CAMBIAR_POKEMON
     }
 
-    private Estado estadoActual = Estado.MENU_OPCIONES;
+    Estado estadoActual = Estado.MENU_OPCIONES;
 
     private String[] opcionesMenu = {"Atacar", "Curar", "Pokemones", "Huir"};
     private int selectedOptionIndex = 0;
@@ -84,7 +84,7 @@ public class Fight {
     private String pokemonNames[] = {null,null,null,null};
     
     private Pokemon listaPokemon[] = {null,null,null,null,null,};
-    
+    boolean huir;
     public Fight(MyPokemonGame game, Pokemon[] listaPokemon) {
         this.game = game;
         
@@ -210,6 +210,8 @@ public class Fight {
             porcentajeJugador = (float) pokemonAmigo.vida / 100; 
         }
 
+        narracion = "Haz cambiado a " + pokemonAmigo.nombre;  
+
         estadoActual = Estado.MENU_OPCIONES;
         return false;
     }
@@ -246,7 +248,7 @@ public class Fight {
         }
         return false;
     }
-
+    
     //ejecutar la opcion seleccionada
     private boolean ejecutarAccionMenu() {
         switch (selectedOptionIndex) {
@@ -258,11 +260,11 @@ public class Fight {
                 return usarPocion();
             case 2:
             	estadoActual = Estado.CAMBIAR_POKEMON;
-                narracion = pokemonAmigo.nombre + " cambia de Pokémon.";  
                 break;
             case 3:                       
                 narracion = "¡Has huido de la batalla!";
-                pokemonEnemigo.vida=0;
+                pokemonAmigo.vida=0;
+                huir = true;
                 break;
         }
         return false;
@@ -353,7 +355,9 @@ public class Fight {
         // Color de fondo de las áreas de texto y menú
         sr.setColor(new Color(205 / 255f, 205 / 255f, 205 / 255f, 0.8f));
         sr.rect(48, 47, 1178, 150);
-        roundRect(sr, 90, 63, 520, 120, 20, new Color(175 / 255f, 175 / 255f, 175 / 255f, 0.8f));
+        
+        
+        roundRect(sr, 60, 63, 620, 120, 20, new Color(175 / 255f, 175 / 255f, 175 / 255f, 0.8f));
 
         if (estadoActual == Estado.MENU_OPCIONES) {
             Color[] buttonColors = {Color.RED, Color.CYAN, Color.GREEN, Color.ORANGE};
@@ -405,9 +409,16 @@ public class Fight {
         game.batch.draw(pokemonAmigo.pokemonSprite, 490, 210, 150 * (-1), 150);
         game.batch.draw(pokemonEnemigo.pokemonSprite, 785, 380, 150, 150);
 
+        //Setear color
+        if(pokemonAmigo.vida<=0) {
+        	text.setColor(Color.RED);
+        } else if(pokemonEnemigo.vida<=0) {
+        	text.setColor(Color.GREEN);
+        } else {
+            text.setColor(new Color(0, 0, 0, 0.8f));
+        }
         // Dibuja texto de narración
-        text.setColor(new Color(0, 0, 0, 0.8f));
-        text.draw(game.batch, narracion, 100f, 135f);
+        text.draw(game.batch, narracion, 70f, 135f);
 
         // Guarda el color original para restablecerlo después
         Color originalColor = text1.getColor().cpy();
@@ -422,9 +433,9 @@ public class Fight {
                     optionTextY = 160f - (i - 2) * 70;
                 }
                 if (i == selectedOptionIndex) {
-                    text1.setColor(Color.WHITE); // Cambia el color del texto de la opción seleccionada
+                    text1.setColor(Color.WHITE); 
                 } else {
-                    text1.setColor(originalColor); // Restaura el color original
+                    text1.setColor(originalColor); 
                 }
                 text1.draw(game.batch, opcionesMenu[i], optionTextX, optionTextY);
             }
@@ -438,11 +449,11 @@ public class Fight {
                     attackTextY = 160f - (i - 2) * 70;
                 }
                 if (i == selectedAttackIndex) {
-                    text1.setColor(Color.YELLOW); // Cambia el color del texto del ataque seleccionado
+                    text1.setColor(Color.YELLOW); 
                 } else {
-                    text1.setColor(originalColor); // Restaura el color original
+                    text1.setColor(originalColor); 
                 }
-                text1.draw(game.batch, pokemonAmigo.atacks[i].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+                text1.draw(game.batch, pokemonAmigo.atacks[i].nombre, attackTextX, attackTextY); 
             }
         } else if (estadoActual == Estado.CAMBIAR_POKEMON) {
             int j = 0;
@@ -455,18 +466,18 @@ public class Fight {
                     attackTextY = 160f - (i - 2) * 70;
                 }
                 if (i == selectedChangeOption) {
-                    text1.setColor(Color.WHITE); // Cambia el color del texto del pokemon seleccionado.
+                    text1.setColor(Color.WHITE); 
                 } else {
-                    text1.setColor(originalColor); // Restaura el color original
+                    text1.setColor(originalColor); 
                 }
 
                 if (listaPokemon[j].nombre.equals(pokemonAmigo.nombre)) {
-                    text1.draw(game.batch, listaPokemon[j + 1].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+                    text1.draw(game.batch, listaPokemon[j + 1].nombre, attackTextX, attackTextY); 
                     pokemonNames[k] = listaPokemon[j + 1].nombre;
                     j += 2;
                     k++;
                 } else {
-                    text1.draw(game.batch, listaPokemon[j].nombre, attackTextX, attackTextY); // Ajusta la posición en función del índice
+                    text1.draw(game.batch, listaPokemon[j].nombre, attackTextX, attackTextY); 
                     pokemonNames[k] = listaPokemon[j].nombre;
                     j++;
                     k++;
@@ -508,6 +519,7 @@ public class Fight {
         paused = true;
 
         porcentajeJugador = (float) (pokemonEnemigo.atacks[attack].atacar(pokemonAmigo));
+        
     }
 
     public void resize(int width, int height) {
